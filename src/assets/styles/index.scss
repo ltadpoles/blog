@@ -1,0 +1,7 @@
+@use 'base';
+
+/* 灰色滤镜 */
+.grey {
+  filter: grayscale(100%);
+  -webkit-filter: grayscale(80%);
+}
