@@ -1,15 +1,11 @@
 <template>
-  <el-config-provider>
+  <n-config-provider :locale="zhCN" :date-locale="dateZhCN">
     <RouterView />
-  </el-config-provider>
+  </n-config-provider>
 </template>
 
 <script setup>
 import { RouterView } from 'vue-router'
-import { ElConfigProvider } from 'element-plus'
-// import { ref } from 'vue'
-// import zhCN from 'element-plus/dist/locale/zh-cn'
-// import en from 'element-plus/dist/locale/en'
-
-// let locale = ref(zhCN)
+import { NConfigProvider } from 'naive-ui'
+import { zhCN, dateZhCN } from 'naive-ui'
 </script>

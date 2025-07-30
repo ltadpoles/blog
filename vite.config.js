@@ -6,21 +6,26 @@ import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
-import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+import { setup } from '@css-render/vue3-ssr'
 
 export default defineConfig(() => {
   return {
     envDir: 'env',
-    base: '/',
     plugins: [
       vue(),
       vueDevTools(),
       AutoImport({
-        resolvers: [ElementPlusResolver()]
+        imports: [
+          'vue',
+          {
+            'naive-ui': ['useDialog', 'useMessage', 'useNotification', 'useLoadingBar']
+          }
+        ]
       }),
       Components({
-        resolvers: [ElementPlusResolver()]
+        resolvers: [NaiveUiResolver()]
       }),
       createSvgIconsPlugin({
         iconDirs: [path.resolve(process.cwd(), 'src/assets/svg')],
@@ -28,9 +33,17 @@ export default defineConfig(() => {
       })
     ],
     ssr: {
-      // 将 CSS 文件外部化，避免 Node.js 直接加载
-      external: ['*.css', 'element-plus/theme-chalk/*'],
-      noExternal: true
+      noExternal: ['naive-ui', 'vueuc', 'date-fns']
+    },
+    ssgOptions: {
+      async onBeforePageRender(_, __, appCtx) {
+        const { collect } = setup(appCtx.app)
+        appCtx.__collectStyle = collect
+        return undefined
+      },
+      async onPageRendered(_, renderedHTML, appCtx) {
+        return renderedHTML.replace(/<\/head>/, `${appCtx.__collectStyle()}</head>`)
+      }
     },
     resolve: {
       alias: {
@@ -51,19 +64,7 @@ export default defineConfig(() => {
         output: {
           chunkFileNames: 'static/js/[name]-[hash].js', // 引入文件名的名称
           entryFileNames: 'static/js/[name]-[hash].js', // 包的入口文件名称
-          assetFileNames: 'static/[ext]/[name]-[hash].[ext]', // 资源文件像 字体，图片等
-          manualChunks(id) {
-            // 将 node_modules 依赖分解为独立 chunk
-            if (id.includes('node_modules')) {
-              // 单独拆分大型库
-              if (id.includes('element-plus')) {
-                return 'vendor-element-plus'
-              }
-              if (id.includes('echarts')) {
-                return 'vendor-echarts'
-              }
-            }
-          }
+          assetFileNames: 'static/[ext]/[name]-[hash].[ext]' // 资源文件像 字体，图片等
         }
       },
       chunkSizeWarningLimit: 1500

@@ -7,15 +7,17 @@
     "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0",
     "build": "vite-ssg build",
     "preview": "vite preview",
     "lint": "eslint . --fix",
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@css-render/vue3-ssr": "^0.15.14",
     "axios": "^1.11.0",
-    "element-plus": "^2.10.4",
+    "fast-glob": "^3.3.3",
+    "naive-ui": "^2.42.0",
     "pinia": "^3.0.3",
     "pinia-plugin-persistedstate": "^4.4.1",
     "sass": "^1.89.2",
@@ -30,14 +32,11 @@
     "eslint": "^9.31.0",
     "eslint-plugin-prettier": "^5.5.3",
     "eslint-plugin-vue": "~10.3.0",
-    "fast-glob": "^3.3.3",
     "globals": "^16.3.0",
     "prettier": "3.6.2",
-    "rollup-plugin-visualizer": "^6.0.3",
     "unplugin-auto-import": "^19.3.0",
     "unplugin-vue-components": "^28.8.0",
     "vite": "^7.0.6",
-    "vite-plugin-compression": "^0.5.1",
     "vite-plugin-svg-icons": "^2.0.1",
     "vite-plugin-vue-devtools": "^8.0.0"
   }

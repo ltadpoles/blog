@@ -9,11 +9,11 @@ import svgIcon from './components/svgIcon/index.vue'
 
 import './assets/styles/index.scss'
 
-export const createApp = ViteSSG(App, { routes }, ({ app, router, initialState, isClient, onSSRAppRendered }) => {
+export const createApp = ViteSSG(App, { routes }, ({ app, initialState, onSSRAppRendered }) => {
   app.component('SvgIcon', svgIcon)
-  app.use(store).use(router)
+  app.use(store)
 
-  if (isClient) {
+  if (!import.meta.env.SSR) {
     store.state.value = initialState.pinia || {}
   } else {
     onSSRAppRendered(() => {
