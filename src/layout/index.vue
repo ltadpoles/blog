@@ -24,10 +24,12 @@ import layoutFooter from './footer/index.vue'
   &-main {
     display: flex;
     justify-content: center;
+    min-height: calc(100vh - 124px);
 
     &-content {
-      max-width: 1400px;
-      background-color: red;
+      max-width: 1200px;
+      width: 100%;
+      background-color: greenyellow;
     }
   }
 }
