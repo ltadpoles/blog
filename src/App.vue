@@ -1,8 +1,8 @@
 <template>
   <n-config-provider
-    :theme="theme"
-    :theme-overrides="theme === null ? lightThemeOverrides : darkThemeOverrides"
-    data-theme="dark"
+    :theme="theme === 'dark' ? darkTheme : null"
+    :theme-overrides="theme === 'dark' ? darkThemeOverrides : lightThemeOverrides"
+    :data-theme="theme"
   >
     <RouterView />
     <n-global-style />
@@ -10,10 +10,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed } from 'vue'
 import { RouterView } from 'vue-router'
 import { darkTheme } from 'naive-ui'
 import { lightThemeOverrides, darkThemeOverrides } from './utils/theme'
+import { useSettingStore } from './stores/modules/setting'
 
-const theme = ref(darkTheme)
+const settingStore = useSettingStore()
+
+const theme = computed(() => settingStore.theme)
 </script>

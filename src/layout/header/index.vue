@@ -21,12 +21,23 @@
     </div>
 
     <div class="header-right">
-      <SvgIcon name="sun" width="2rem" height="2rem" />
+      <Transition name="theme">
+        <SvgIcon v-if="settingStore.theme === 'dark'" name="sun" width="2rem" height="2rem" @click="themeChange" />
+        <SvgIcon v-else name="moon" width="2rem" height="2rem" @click="themeChange" />
+      </Transition>
     </div>
   </header>
 </template>
 
-<script setup></script>
+<script setup>
+import { useSettingStore } from '@/stores/modules/setting'
+
+const settingStore = useSettingStore()
+
+const themeChange = () => {
+  settingStore.setTheme(settingStore.theme === 'light' ? 'dark' : 'light')
+}
+</script>
 
 <style lang="scss" scoped>
 .header {

@@ -1,0 +1,14 @@
+/* theme transition */
+.theme-enter-active {
+  transition: all .8s;
+}
+.theme-leave-active {
+  transition: all .8s;
+}
+.theme-enter-from,
+.theme-leave-active {
+  opacity: 0;
+}
+.theme-leave-active {
+  position: absolute;
+}
