@@ -20,9 +20,13 @@
       </div>
     </div>
 
+    <SvgIcon class="header-catelogue" name="catalogue" width="2rem" height="2rem" @click="themeChange" />
+
+    <h1 class="header-title">游荡de蝌蚪</h1>
+
     <div class="header-right">
       <Transition name="theme">
-        <SvgIcon v-if="settingStore.theme === 'dark'" name="sun" width="2rem" height="2rem" @click="themeChange" />
+        <SvgIcon v-if="settingStore.theme === 'light'" name="sun" width="2rem" height="2rem" @click="themeChange" />
         <SvgIcon v-else name="moon" width="2rem" height="2rem" @click="themeChange" />
       </Transition>
     </div>
@@ -47,16 +51,23 @@ const themeChange = () => {
   align-items: center;
   border-bottom: 1px solid var(--border-color);
 
+  h1 {
+    font-size: 1.2rem;
+  }
+
   &-left {
     display: flex;
     align-items: center;
     gap: 5px;
     margin-right: 60px;
+  }
 
-    &-title,
-    h1 {
-      font-size: 1.2rem;
-    }
+  &-catelogue {
+    display: none;
+  }
+
+  &-title {
+    display: none;
   }
 
   &-menu {
@@ -74,6 +85,28 @@ const themeChange = () => {
 
   &-right {
     display: flex;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .header {
+    justify-content: space-between;
+
+    &-left {
+      display: none;
+    }
+
+    &-catelogue {
+      display: block;
+    }
+
+    &-title {
+      display: block;
+    }
+
+    &-menu {
+      display: none;
+    }
   }
 }
 </style>

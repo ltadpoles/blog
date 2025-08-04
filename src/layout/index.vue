@@ -29,7 +29,7 @@ import layoutFooter from './footer/index.vue'
     &-content {
       max-width: 1200px;
       width: 100%;
-      // background-color: greenyellow;
+      padding: 20px;
     }
   }
 }
