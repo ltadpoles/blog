@@ -1,5 +1,5 @@
 <template>
-  <div>首页</div>
+  <div>归档</div>
 </template>
 
 <script setup></script>

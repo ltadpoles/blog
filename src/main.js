@@ -1,4 +1,5 @@
 import { ViteSSG } from 'vite-ssg'
+import NProgress from 'nprogress'
 
 import App from './App.vue'
 import { routes } from './router'
@@ -9,11 +10,19 @@ import svgIcon from './components/svgIcon/index.vue'
 
 import './assets/styles/index.scss'
 
-export const createApp = ViteSSG(App, { routes }, ({ app, initialState, onSSRAppRendered }) => {
+export const createApp = ViteSSG(App, { routes }, ({ app, initialState, router, onSSRAppRendered }) => {
   app.component('SvgIcon', svgIcon)
   app.use(store)
 
   if (!import.meta.env.SSR) {
+    router.beforeEach((to, from) => {
+      if (to.path !== from.path) {
+        NProgress.start()
+      }
+    })
+    router.afterEach(() => {
+      NProgress.done()
+    })
     store.state.value = initialState.pinia || {}
   } else {
     onSSRAppRendered(() => {

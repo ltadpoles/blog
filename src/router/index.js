@@ -11,6 +11,16 @@ export const routes = [
         path: '',
         name: 'Dashboard',
         component: Dashboard
+      },
+      {
+        path: '/archive',
+        name: 'Archive',
+        component: () => import('@/views/archive/index.vue')
+      },
+      {
+        path: '/about',
+        name: 'About',
+        component: () => import('@/views/about/index.vue')
       }
     ]
   }

@@ -1,24 +1,6 @@
 @use 'base';
 @use 'transtion';
 
-:root {
-  /* 浅色主题变量 */
-  --primary-color: #2a75ec;
-  --primary-color-hover: #5490ef;
-  --border-color: rgb(239, 239, 245);
-  --border-radius: 4px;
-  --bg-color: #ffffff;
-}
-
-[data-theme='dark'] {
-  /* 深色主题变量 */
-  --primary-color: #2a75ec;
-  --primary-color-hover: #5490ef;
-  --border-color: rgba(255, 255, 255, 0.09);
-  --border-radius: 4px;
-  --bg-color: rgb(24, 24, 28);
-}
-
 /* 灰色滤镜 */
 .grey {
   filter: grayscale(100%);

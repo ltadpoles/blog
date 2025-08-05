@@ -1,22 +1,14 @@
 <template>
-  <n-config-provider
-    :theme="theme === 'dark' ? darkTheme : null"
-    :theme-overrides="theme === 'dark' ? darkThemeOverrides : lightThemeOverrides"
-    :data-theme="theme"
-  >
+  <el-config-provider :locale="locale">
     <RouterView />
-    <n-global-style />
-  </n-config-provider>
+  </el-config-provider>
 </template>
 
 <script setup>
-import { computed } from 'vue'
 import { RouterView } from 'vue-router'
-import { darkTheme } from 'naive-ui'
-import { lightThemeOverrides, darkThemeOverrides } from './utils/theme'
-import { useSettingStore } from './stores/modules/setting'
+import { ElConfigProvider } from 'element-plus'
+import { computed } from 'vue'
+import zhCN from 'element-plus/dist/locale/zh-cn'
 
-const settingStore = useSettingStore()
-
-const theme = computed(() => settingStore.theme)
+let locale = computed(() => zhCN)
 </script>

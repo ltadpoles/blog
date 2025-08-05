@@ -2,21 +2,21 @@
   <header class="header">
     <div class="header-left">
       <SvgIcon name="logo" width="2.2rem" height="2.2rem" />
-      <h1 class="header-logo-title">这个一个名称</h1>
+      <h1 class="header-logo-title">游荡de蝌蚪</h1>
     </div>
 
     <div class="header-menu">
       <div class="header-menu-item">
         <SvgIcon name="home" width="1.4rem" height="1.4rem" />
-        <span>测试1</span>
+        <span>首页</span>
       </div>
       <div class="header-menu-item">
         <SvgIcon name="archive" width="1.4rem" height="1.4rem" />
-        <span>测试2</span>
+        <span>归档</span>
       </div>
       <div class="header-menu-item">
         <SvgIcon name="about" width="1.4rem" height="1.4rem" />
-        <span>测试3</span>
+        <span>关于</span>
       </div>
     </div>
 
@@ -25,10 +25,10 @@
     <h1 class="header-title">游荡de蝌蚪</h1>
 
     <div class="header-right">
-      <Transition name="theme">
+      <transition name="theme">
         <SvgIcon v-if="settingStore.theme === 'light'" name="sun" width="2rem" height="2rem" @click="themeChange" />
         <SvgIcon v-else name="moon" width="2rem" height="2rem" @click="themeChange" />
-      </Transition>
+      </transition>
     </div>
   </header>
 </template>
