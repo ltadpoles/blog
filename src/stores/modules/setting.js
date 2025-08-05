@@ -11,9 +11,5 @@ export const useSettingStore = defineStore('settingStore', {
     setTheme(theme) {
       this.theme = theme
     }
-  },
-  // 持久化存储
-  persist: {
-    storage: localStorage
   }
 })
