@@ -7,15 +7,15 @@
 
     <div class="header-menu">
       <div class="header-menu-item">
-        <SvgIcon name="home" width="1.4rem" height="1.4rem" />
+        <SvgIcon name="home" />
         <span>首页</span>
       </div>
       <div class="header-menu-item">
-        <SvgIcon name="archive" width="1.4rem" height="1.4rem" />
+        <SvgIcon name="archive" />
         <span>归档</span>
       </div>
       <div class="header-menu-item">
-        <SvgIcon name="about" width="1.4rem" height="1.4rem" />
+        <SvgIcon name="about" />
         <span>关于</span>
       </div>
     </div>
@@ -44,69 +44,5 @@ const themeChange = () => {
 </script>
 
 <style lang="scss" scoped>
-.header {
-  height: 64px;
-  padding: 0 20px;
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid var(--border-color);
-
-  h1 {
-    font-size: 1.2rem;
-  }
-
-  &-left {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    margin-right: 60px;
-  }
-
-  &-catelogue {
-    display: none;
-  }
-
-  &-title {
-    display: none;
-  }
-
-  &-menu {
-    display: flex;
-    gap: 30px;
-    flex: 1;
-
-    &-item {
-      display: flex;
-      gap: 5px;
-      align-items: center;
-      cursor: pointer;
-    }
-  }
-
-  &-right {
-    display: flex;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .header {
-    justify-content: space-between;
-
-    &-left {
-      display: none;
-    }
-
-    &-catelogue {
-      display: block;
-    }
-
-    &-title {
-      display: block;
-    }
-
-    &-menu {
-      display: none;
-    }
-  }
-}
+@use './index.scss';
 </style>

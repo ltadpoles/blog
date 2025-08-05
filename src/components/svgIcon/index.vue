@@ -27,11 +27,11 @@ const props = defineProps({
   },
   width: {
     type: String,
-    default: '1rem'
+    default: '1.2rem'
   },
   height: {
     type: String,
-    default: '1rem'
+    default: '1.2rem'
   },
   marginRight: {
     type: String,
