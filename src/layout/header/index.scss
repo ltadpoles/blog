@@ -3,25 +3,14 @@
   padding: 0 20px;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid var(--border-color);
-
-  h1 {
-    font-size: 1.2rem;
-  }
+  justify-content: space-between;
+  border-bottom: 1px solid var(--el-border-color);
 
   &-left {
     display: flex;
     align-items: center;
     gap: 5px;
     margin-right: 60px;
-  }
-
-  &-catelogue {
-    display: none;
-  }
-
-  &-title {
-    display: none;
   }
 
   &-menu {
@@ -39,27 +28,5 @@
 
   &-right {
     display: flex;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .header {
-    justify-content: space-between;
-
-    &-left {
-      display: none;
-    }
-
-    &-catelogue {
-      display: block;
-    }
-
-    &-title {
-      display: block;
-    }
-
-    &-menu {
-      display: none;
-    }
   }
 }

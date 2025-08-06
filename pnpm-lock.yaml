@@ -14,24 +14,9 @@ importers:
       element-plus:
         specifier: ^2.10.5
         version: 2.10.5(vue@3.5.18)
-      fast-glob:
-        specifier: ^3.3.3
-        version: 3.3.3
       nprogress:
         specifier: ^0.2.0
         version: 0.2.0
-      pinia:
-        specifier: ^3.0.3
-        version: 3.0.3(vue@3.5.18)
-      pinia-plugin-persistedstate:
-        specifier: ^4.4.1
-        version: 4.4.1(pinia@3.0.3(vue@3.5.18))
-      sass:
-        specifier: ^1.89.2
-        version: 1.89.2
-      vite-ssg:
-        specifier: ^28.0.0
-        version: 28.0.0(prettier@3.6.2)(unhead@2.0.12)(vite@7.0.6(@types/node@24.1.0)(sass@1.89.2)(terser@5.43.1))(vue-router@4.5.1(vue@3.5.18))(vue@3.5.18)
       vue:
         specifier: ^3.5.18
         version: 3.5.18
@@ -57,12 +42,24 @@ importers:
       eslint-plugin-vue:
         specifier: ~10.3.0
         version: 10.3.0(eslint@9.32.0)(vue-eslint-parser@10.2.0(eslint@9.32.0))
+      fast-glob:
+        specifier: ^3.3.3
+        version: 3.3.3
       globals:
         specifier: ^16.3.0
         version: 16.3.0
+      pinia:
+        specifier: ^3.0.3
+        version: 3.0.3(vue@3.5.18)
+      pinia-plugin-persistedstate:
+        specifier: ^4.4.1
+        version: 4.4.1(pinia@3.0.3(vue@3.5.18))
       prettier:
         specifier: 3.6.2
         version: 3.6.2
+      sass:
+        specifier: ^1.89.2
+        version: 1.89.2
       unplugin-auto-import:
         specifier: ^19.3.0
         version: 19.3.0(@vueuse/core@9.13.0(vue@3.5.18))
@@ -75,6 +72,9 @@ importers:
       vite-plugin-svg-icons:
         specifier: ^2.0.1
         version: 2.0.1(vite@7.0.6(@types/node@24.1.0)(sass@1.89.2)(terser@5.43.1))
+      vite-ssg:
+        specifier: ^28.0.0
+        version: 28.0.0(prettier@3.6.2)(unhead@2.0.12)(vite@7.0.6(@types/node@24.1.0)(sass@1.89.2)(terser@5.43.1))(vue-router@4.5.1(vue@3.5.18))(vue@3.5.18)
 
 packages:
 

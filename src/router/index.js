@@ -8,17 +8,17 @@ export const routes = [
     component: Layout,
     children: [
       {
-        path: '',
+        path: '/',
         name: 'Dashboard',
         component: Dashboard
       },
       {
-        path: '/archive',
+        path: 'archive',
         name: 'Archive',
         component: () => import('@/views/archive/index.vue')
       },
       {
-        path: '/about',
+        path: 'about',
         name: 'About',
         component: () => import('@/views/about/index.vue')
       }

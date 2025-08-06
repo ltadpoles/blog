@@ -1,9 +1,18 @@
+.slide-fade-enter-active {
+  transition: all 0.4s ease-out;
+}
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
+}
+
 /* theme transition */
 .theme-enter-active {
-  transition: all .8s;
+  transition: all 1s;
 }
 .theme-leave-active {
-  transition: all .8s;
+  transition: all 1s;
 }
 .theme-enter-from,
 .theme-leave-active {

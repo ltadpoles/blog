@@ -1,8 +1,26 @@
 @use 'base';
+@use 'element-plus/theme-chalk/dark/css-vars.css';
+@use 'element-plus/theme-chalk/src/message.scss';
 @use 'transtion';
+
+h1 {
+  font-size: 1.2rem;
+}
 
 /* 灰色滤镜 */
 .grey {
   filter: grayscale(100%);
   -webkit-filter: grayscale(80%);
+}
+
+@media screen and (max-width: 768px) {
+  .hidden-mini {
+    display: none !important;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .hidden {
+    display: none !important;
+  }
 }

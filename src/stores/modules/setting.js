@@ -11,5 +11,8 @@ export const useSettingStore = defineStore('settingStore', {
     setTheme(theme) {
       this.theme = theme
     }
+  },
+  persist: import.meta.env.SSR === false && {
+    storage: localStorage
   }
 })

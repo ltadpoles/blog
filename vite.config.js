@@ -24,6 +24,9 @@ export default defineConfig(() => {
         symbolId: 'icon-[dir]-[name]'
       })
     ],
+    ssr: {
+      noExternal: ['element-plus']
+    },
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url))
