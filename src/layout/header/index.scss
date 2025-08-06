@@ -1,9 +1,13 @@
 .header {
+  position: fixed;
+  z-index: 99;
+  width: 100vw;
   height: 64px;
   padding: 0 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background-color: var(--el-bg-color);
   border-bottom: 1px solid var(--el-border-color);
 
   &-left {
