@@ -1,0 +1,30 @@
+.dashboard {
+  display: flex;
+  gap: 30px;
+
+  &-content {
+    flex: 1;
+
+    .content-list {
+      &-item {
+        background-color: var(--el-bg-color);
+        box-shadow: var(--el-box-shadow);
+        border-radius: 10px;
+        padding: 20px;
+        height: 240px;
+        margin-bottom: 20px;
+        transition: all 0.5s;
+        cursor: pointer;
+
+        &:hover {
+          transform: translateY(-5px);
+        }
+      }
+    }
+  }
+
+  .sidebar {
+    width: 320px;
+    min-width: 320px;
+  }
+}

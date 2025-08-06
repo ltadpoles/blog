@@ -1,17 +1,24 @@
 <template>
-  <div>
-    <el-card style="max-width: 480px">
-      <template #header>
-        <div class="card-header">
-          <span>Card name</span>
-        </div>
-      </template>
-      <p v-for="o in 4" :key="o" class="text item">{{ 'List item ' + o }}</p>
-      <template #footer>Footer content</template>
-    </el-card>
+  <div class="dashboard">
+    <div class="dashboard-content">
+      <div class="content-list">
+        <div class="content-list-item"></div>
+        <div class="content-list-item"></div>
+        <div class="content-list-item"></div>
+        <div class="content-list-item"></div>
+        <div class="content-list-item"></div>
+        <div class="content-list-item"></div>
+        <div class="content-list-item"></div>
+        <div class="content-list-item"></div>
+        <div class="content-list-item"></div>
+      </div>
+    </div>
+    <div class="sidebar"></div>
   </div>
 </template>
 
 <script setup></script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+@use 'index.scss' as *;
+</style>

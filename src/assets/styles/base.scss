@@ -28,3 +28,19 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* 整个滚动条 */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+  background: #888; /* 滑块颜色 */
+  border-radius: 10px; /* 滑块圆角 */
+}
+
+/* 滑块悬停效果 */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* 悬停颜色 */
+}
