@@ -14,6 +14,11 @@
         <div class="item-count">19</div>
         <div class="item-title">分类</div>
       </div>
+      <el-divider direction="vertical" />
+      <div class="user-statistics-item">
+        <div class="item-count">39</div>
+        <div class="item-title">标签</div>
+      </div>
     </div>
     <el-divider />
     <div class="user-information">

@@ -13,7 +13,7 @@
         <div class="content-list-item"></div>
       </div>
     </div>
-    <div class="sidebar">
+    <div class="sidebar hidden-mini">
       <user />
       <el-affix :offset="64">
         <div class="categories">
@@ -47,6 +47,41 @@
             <div class="categories-list-item">
               <div class="categories-title">测试5号</div>
               <div class="categories-count">10</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tags">
+          <div class="tags-header">
+            <div class="tags-header-left">
+              <SvgIcon name="tag" />
+              <span>标签</span>
+            </div>
+            <div class="tags-header-right">
+              <SvgIcon name="more" />
+            </div>
+          </div>
+          <el-divider />
+          <div class="tags-content">
+            <div class="tags-content-item">
+              <span>Vue</span>
+              <sup>10</sup>
+            </div>
+            <div class="tags-content-item">
+              <span>React</span>
+              <sup>10</sup>
+            </div>
+            <div class="tags-content-item">
+              <span>Angluar</span>
+              <sup>10</sup>
+            </div>
+            <div class="tags-content-item">
+              <span>Element</span>
+              <sup>10</sup>
+            </div>
+            <div class="tags-content-item">
+              <span>Vue</span>
+              <sup>10</sup>
             </div>
           </div>
         </div>
