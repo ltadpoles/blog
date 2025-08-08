@@ -1,6 +1,7 @@
 @use 'element-plus/theme-chalk/base.css' as *;
 @use 'element-plus/theme-chalk/dark/css-vars.css' as *;
 @use 'element-plus/theme-chalk/src/message.scss' as *;
+@use 'element-plus/theme-chalk/display.css' as *;
 @use 'element' as *;
 @use 'base.scss' as *;
 @use 'transtion' as *;
@@ -9,10 +10,24 @@ h1 {
   font-size: 1.2rem;
 }
 
-/* 灰色滤镜 */
+// 灰色滤镜
 .grey {
   filter: grayscale(100%);
   -webkit-filter: grayscale(80%);
+}
+
+// 图标选中状态
+.svg-icon {
+  &:focus {
+    outline: none;
+  }
+}
+
+// 下拉菜单
+.dropdown-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 @media screen and (max-width: 768px) {

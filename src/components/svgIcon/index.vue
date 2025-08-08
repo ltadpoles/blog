@@ -1,6 +1,6 @@
 <template>
   <svg
-    aria-hidden="true"
+    aria-hidden="false"
     class="svg-icon"
     :style="{ marginRight: marginRight, cursor: cursor, minWidth: width, minHeight: height }"
     :width="width"
