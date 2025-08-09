@@ -1,17 +1,7 @@
 <template>
   <div class="dashboard">
     <div class="dashboard-content">
-      <div class="content-list">
-        <div class="content-list-item"></div>
-        <div class="content-list-item"></div>
-        <div class="content-list-item"></div>
-        <div class="content-list-item"></div>
-        <div class="content-list-item"></div>
-        <div class="content-list-item"></div>
-        <div class="content-list-item"></div>
-        <div class="content-list-item"></div>
-        <div class="content-list-item"></div>
-      </div>
+      <article-list />
     </div>
     <div class="sidebar hidden-mini">
       <user />
@@ -92,6 +82,7 @@
 
 <script setup>
 import user from '@/components/user/index.vue'
+import articleList from '@/components/article/index.vue'
 </script>
 
 <style lang="scss" scoped>
