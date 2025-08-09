@@ -3,12 +3,17 @@
     background-color: var(--el-bg-color);
     box-shadow: var(--el-box-shadow);
     border-radius: 10px;
-    // height: 240px;
     margin-bottom: 20px;
     transition: all 0.5s;
 
     &:hover {
       transform: translateY(-3px);
+
+      .article-image {
+        > img {
+          transform: scale(1.05);
+        }
+      }
     }
   }
 
@@ -20,11 +25,6 @@
       height: 180px;
       border-radius: 10px 10px 0 0;
       transition: all 1s;
-
-      &:hover {
-        transform: scale(1.05);
-        border-radius: 10px 10px 0 0;
-      }
     }
   }
 
