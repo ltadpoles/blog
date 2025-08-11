@@ -25,7 +25,7 @@ export default defineConfig(() => {
       })
     ],
     ssr: {
-      noExternal: ['element-plus']
+      noExternal: ['element-plus', 'md-editor-v3']
     },
     resolve: {
       alias: {

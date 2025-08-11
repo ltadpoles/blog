@@ -1,5 +1,5 @@
 <template>
-  <div>关于</div>
+  <div>这个人很懒，什么也没留下...</div>
 </template>
 
 <script setup></script>

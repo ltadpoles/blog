@@ -1,0 +1,35 @@
+.view-content {
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: var(--el-box-shadow);
+}
+
+.article-title {
+  margin-bottom: 20px;
+  font-size: 1.6rem;
+}
+
+.article-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+
+  &-left {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  &-right {
+    padding: 4px 8px;
+    background-color: var(--el-bg-color-page);
+    border-radius: 3px;
+  }
+}
+
+.article-tags {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

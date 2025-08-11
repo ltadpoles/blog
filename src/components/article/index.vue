@@ -25,7 +25,7 @@
       <el-divider />
       <div class="article-content-footer">
         <div class="article-content-footer-left">
-          <SvgIcon name="calendar" width="0.85rem" height="0.85rem" />
+          <SvgIcon name="calendar" />
           <span>2025-08-09</span>
         </div>
         <div class="article-content-footer-right">生活记录</div>
