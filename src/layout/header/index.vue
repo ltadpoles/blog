@@ -18,7 +18,7 @@
       </div>
     </div>
 
-    <el-dropdown trigger="click" class="hidden" @command="command">
+    <el-dropdown trigger="click" class="hidden hidden-large" @command="command">
       <SvgIcon name="catalogue" width="2rem" height="2rem" />
       <template #dropdown>
         <el-dropdown-menu>
@@ -35,7 +35,7 @@
       </template>
     </el-dropdown>
 
-    <h1 class="hidden">游荡de蝌蚪</h1>
+    <h1 class="hidden hidden-large">游荡de蝌蚪</h1>
 
     <div class="header-right">
       <transition name="theme">

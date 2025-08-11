@@ -30,14 +30,6 @@
               <div class="categories-title">测试3号</div>
               <div class="categories-count">10</div>
             </div>
-            <div class="categories-list-item">
-              <div class="categories-title">测试4号</div>
-              <div class="categories-count">10</div>
-            </div>
-            <div class="categories-list-item">
-              <div class="categories-title">测试5号</div>
-              <div class="categories-count">10</div>
-            </div>
           </div>
         </div>
 
