@@ -1,5 +1,8 @@
 <template>
-  <div>归档</div>
+  <div class="view">
+    <div class="view-content"></div>
+    <div class="view-sidebar"></div>
+  </div>
 </template>
 
 <script setup></script>

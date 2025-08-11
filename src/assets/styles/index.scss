@@ -30,6 +30,47 @@ h1 {
   gap: 5px;
 }
 
+.view {
+  display: flex;
+  gap: 10px;
+
+  &-content {
+    flex: 1;
+  }
+
+  &-sidebar {
+    width: 320px;
+    min-width: 320px;
+  }
+}
+
+.card {
+  padding: 14px;
+  background-color: var(--el-bg-color);
+  box-shadow: var(--el-box-shadow);
+  border-radius: 10px;
+  margin-top: 15px;
+  &-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1.12rem;
+
+    &-left {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    &-right {
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+  }
+}
+
 @media screen and (max-width: 768px) {
   .hidden-mini {
     display: none !important;

@@ -1,18 +1,18 @@
 <template>
-  <div class="dashboard">
-    <div class="dashboard-content">
+  <div class="view">
+    <div class="view-content">
       <article-list />
     </div>
-    <div class="sidebar hidden-mini">
+    <div class="view-sidebar hidden-mini">
       <user />
       <el-affix :offset="64">
-        <div class="categories">
-          <div class="categories-header">
-            <div class="categories-header-left">
+        <div class="categories card">
+          <div class="card-header">
+            <div class="card-header-left">
               <SvgIcon name="component" />
               <span>分类</span>
             </div>
-            <div class="categories-header-right">
+            <div class="card-header-right">
               <SvgIcon name="more" />
             </div>
           </div>
@@ -33,13 +33,13 @@
           </div>
         </div>
 
-        <div class="tags">
-          <div class="tags-header">
-            <div class="tags-header-left">
+        <div class="tags card">
+          <div class="card-header">
+            <div class="card-header-left">
               <SvgIcon name="tag" />
               <span>标签</span>
             </div>
-            <div class="tags-header-right">
+            <div class="card-header-right">
               <SvgIcon name="more" />
             </div>
           </div>
