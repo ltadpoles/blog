@@ -33,3 +33,24 @@
   align-items: center;
   gap: 10px;
 }
+
+.article-menu {
+  font-size: 1.2rem;
+  .menu-item {
+    padding: 12px 0;
+    padding-left: 8px;
+    cursor: pointer;
+    border-left: 2px solid transparent;
+    transition: all 0.2s;
+
+    &:hover {
+      color: var(--el-color-primary);
+    }
+
+    &-active {
+      color: var(--el-color-primary);
+      border-left: 2px solid var(--el-color-primary);
+      background-color: rgba(64, 158, 255, 0.1);
+    }
+  }
+}
