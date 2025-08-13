@@ -6,12 +6,18 @@
   box-sizing: border-box;
 }
 
+@font-face {
+  font-family: 'ChillKai';
+  src: url('@/assets/fonts/ChillKai.woff') format('woff');
+}
+
 html {
-  font-size: 14px;
+  font-size: 18px;
 }
 
 body {
   font-family:
+    'ChillKai',
     Inter,
     -apple-system,
     BlinkMacSystemFont,
