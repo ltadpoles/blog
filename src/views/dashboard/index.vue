@@ -18,7 +18,7 @@
           </div>
           <el-divider />
           <div class="categories-list">
-            <div class="categories-list-item">
+            <div class="categories-list-item" @click="toCategory">
               <div class="categories-title">测试1号测试1号测试1号测试1号测试1号测试1号测试1号</div>
               <div class="categories-count">12</div>
             </div>
@@ -45,7 +45,7 @@
           </div>
           <el-divider />
           <div class="tags-content">
-            <div class="tags-content-item">
+            <div class="tags-content-item" @click="toTag">
               <span>Vue</span>
               <sup>10</sup>
             </div>
@@ -75,6 +75,17 @@
 <script setup>
 import user from '@/components/user/index.vue'
 import articleList from '@/components/article/index.vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const toCategory = () => {
+  router.push('/category/1')
+}
+
+const toTag = () => {
+  router.push('/tag/1')
+}
 </script>
 
 <style lang="scss" scoped>
