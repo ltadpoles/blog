@@ -7,7 +7,7 @@
 @use 'transtion' as *;
 
 h1 {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
 }
 
 // markdown 字体
@@ -59,7 +59,7 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 1.12rem;
+    font-size: 1.2rem;
 
     &-left {
       display: flex;
@@ -68,7 +68,6 @@ h1 {
     }
 
     &-right {
-      font-size: 0.85rem;
       display: flex;
       align-items: center;
       cursor: pointer;

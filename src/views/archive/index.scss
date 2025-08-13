@@ -3,7 +3,7 @@
   box-shadow: var(--el-box-shadow);
   border-radius: 10px;
   .time {
-    font-size: 1.57rem;
+    font-size: 1.6rem;
     font-weight: 700;
     margin-bottom: 20px;
   }
@@ -30,10 +30,10 @@
 }
 
 :deep(.el-timeline-item__tail) {
-  margin-top: 6px;
+  margin-top: 4px;
   border-left: 2px dashed var(--el-timeline-node-color);
 }
 
 :deep(.el-timeline-item__node) {
-  margin-top: 6px;
+  margin-top: 4px;
 }

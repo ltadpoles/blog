@@ -11,11 +11,10 @@
   src: url('@/assets/fonts/ChillKai.woff') format('woff');
 }
 
-html {
-  font-size: 18px;
-}
-
+html,
 body {
+  color: var(--el-text-color-primary);
+  font-size: 16px;
   font-family:
     'ChillKai',
     Inter,
