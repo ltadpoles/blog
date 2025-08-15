@@ -6,17 +6,17 @@
     <div class="user-motto">{{ userStore.user.remark }}</div>
     <div class="user-statistics">
       <div class="user-statistics-item">
-        <div class="item-count">19</div>
+        <div class="item-count">{{ statsInfo.articles?.published }}</div>
         <div class="item-title">文章</div>
       </div>
       <el-divider direction="vertical" />
       <div class="user-statistics-item">
-        <div class="item-count">19</div>
+        <div class="item-count">{{ statsInfo.categories?.active }}</div>
         <div class="item-title">分类</div>
       </div>
       <el-divider direction="vertical" />
       <div class="user-statistics-item">
-        <div class="item-count">39</div>
+        <div class="item-count">{{ statsInfo.tags?.active }}</div>
         <div class="item-title">标签</div>
       </div>
     </div>
@@ -30,10 +30,22 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
+import { statistics } from '@/api'
 import { useUserStore } from '@/stores/modules/user'
 import { getImageUrl } from '@/utils'
 
 const userStore = useUserStore()
+
+const statsInfo = ref({})
+const getStats = async () => {
+  let { data } = await statistics()
+  statsInfo.value = data.data
+}
+
+onMounted(() => {
+  getStats()
+})
 </script>
 
 <style lang="scss" scoped>

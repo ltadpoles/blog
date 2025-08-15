@@ -13,22 +13,19 @@
               <span>分类</span>
             </div>
             <div class="card-header-right">
-              <SvgIcon name="more" />
+              <SvgIcon name="more" @click="toCategory('')" />
             </div>
           </div>
           <el-divider />
           <div class="categories-list">
-            <div class="categories-list-item" @click="toCategory">
-              <div class="categories-title">测试1号测试1号测试1号测试1号测试1号测试1号测试1号</div>
-              <div class="categories-count">12</div>
-            </div>
-            <div class="categories-list-item">
-              <div class="categories-title">测试2号</div>
-              <div class="categories-count">10</div>
-            </div>
-            <div class="categories-list-item">
-              <div class="categories-title">测试3号</div>
-              <div class="categories-count">10</div>
+            <div
+              class="categories-list-item"
+              v-for="category in categoryList"
+              :key="category.id"
+              @click="toCategory(category.id)"
+            >
+              <div class="categories-title">{{ category.name }}</div>
+              <div class="categories-count">{{ category.articleCount }}</div>
             </div>
           </div>
         </div>
@@ -40,30 +37,14 @@
               <span>标签</span>
             </div>
             <div class="card-header-right">
-              <SvgIcon name="more" />
+              <SvgIcon name="more" @click="toTag('')" />
             </div>
           </div>
           <el-divider />
           <div class="tags-content">
-            <div class="tags-content-item" @click="toTag">
-              <span>Vue</span>
-              <sup>10</sup>
-            </div>
-            <div class="tags-content-item">
-              <span>React</span>
-              <sup>10</sup>
-            </div>
-            <div class="tags-content-item">
-              <span>Angluar</span>
-              <sup>10</sup>
-            </div>
-            <div class="tags-content-item">
-              <span>Element</span>
-              <sup>10</sup>
-            </div>
-            <div class="tags-content-item">
-              <span>Vue</span>
-              <sup>10</sup>
+            <div class="tags-content-item" v-for="tag in tagList" :key="tag.id" @click="toTag(tag.id)">
+              <span>{{ tag.name }}</span>
+              <sup>{{ tag.articleCount }}</sup>
             </div>
           </div>
         </div>
@@ -73,19 +54,35 @@
 </template>
 
 <script setup>
+import { onMounted, ref } from 'vue'
 import user from '@/components/user/index.vue'
 import articleList from '@/components/article/index.vue'
 import { useRouter } from 'vue-router'
+import { categoryStatistics, tagStatistics } from '@/api'
 
 const router = useRouter()
 
-const toCategory = () => {
-  router.push('/category/1')
+const categoryList = ref([])
+const tagList = ref([])
+const getCategoryStats = async () => {
+  let { data } = await categoryStatistics()
+  categoryList.value = data.data
+}
+const getTagStats = async () => {
+  let { data } = await tagStatistics()
+  tagList.value = data.data
+}
+const toCategory = id => {
+  router.push(`/category/${id}`)
+}
+const toTag = id => {
+  router.push(`/tag/${id}`)
 }
 
-const toTag = () => {
-  router.push('/tag/1')
-}
+onMounted(() => {
+  getCategoryStats()
+  getTagStats()
+})
 </script>
 
 <style lang="scss" scoped>

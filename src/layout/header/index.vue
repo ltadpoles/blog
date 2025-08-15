@@ -35,7 +35,7 @@
       </template>
     </el-dropdown>
 
-    <h1 class="hidden hidden-large">{{ userStore.user.name }}</h1>
+    <h1 class="hidden hidden-large" @click="toLink('/', 0)">{{ userStore.user.name }}</h1>
 
     <div class="header-right">
       <transition name="theme">

@@ -28,12 +28,12 @@ export const routes = [
         component: () => import('@/views/article/index.vue')
       },
       {
-        path: 'category/:id',
+        path: 'category/:id?',
         name: 'Category',
         component: () => import('@/views/article/category/index.vue')
       },
       {
-        path: 'tag/:id',
+        path: 'tag/:id?',
         name: 'tag',
         component: () => import('@/views/article/tag/index.vue')
       }
