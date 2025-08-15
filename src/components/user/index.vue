@@ -1,9 +1,9 @@
 <template>
   <div class="user">
     <div class="user-img">
-      <img :src="getImageUrl('avatar.jpg')" alt="" />
+      <img :src="userStore.user.avatar || getImageUrl('avatar.jpg')" alt="" />
     </div>
-    <div class="user-motto">给这个世界的留言给这个世界的留言给这个世界的留言</div>
+    <div class="user-motto">{{ userStore.user.remark }}</div>
     <div class="user-statistics">
       <div class="user-statistics-item">
         <div class="item-count">19</div>
@@ -30,7 +30,10 @@
 </template>
 
 <script setup>
+import { useUserStore } from '@/stores/modules/user'
 import { getImageUrl } from '@/utils'
+
+const userStore = useUserStore()
 </script>
 
 <style lang="scss" scoped>

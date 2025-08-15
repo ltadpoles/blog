@@ -27,6 +27,8 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import layoutHeader from './header/index.vue'
 import layoutFooter from './footer/index.vue'
+import { userInfo } from '@/api/user'
+import { useUserStore } from '@/stores/modules/user'
 
 const isShowScrollTop = ref(false)
 
@@ -46,8 +48,15 @@ const handleScroll = () => {
   }
 }
 
+const userStore = useUserStore()
+const getUserInfo = async () => {
+  let { data } = await userInfo()
+  userStore.setUser(data.data)
+}
+
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
+  getUserInfo()
 })
 
 onUnmounted(() => {

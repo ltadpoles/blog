@@ -2,7 +2,7 @@
   <header class="header">
     <div class="header-left hidden-mini" @click="toLink('/', 0)">
       <SvgIcon name="logo" width="2.2rem" height="2.2rem" />
-      <h1 class="header-logo-title">游荡de蝌蚪</h1>
+      <h1 class="header-logo-title">{{ userStore.user.name }}</h1>
     </div>
 
     <div class="header-menu hidden-mini">
@@ -35,7 +35,7 @@
       </template>
     </el-dropdown>
 
-    <h1 class="hidden hidden-large">游荡de蝌蚪</h1>
+    <h1 class="hidden hidden-large">{{ userStore.user.name }}</h1>
 
     <div class="header-right">
       <transition name="theme">
@@ -56,8 +56,10 @@
 import { ref, onMounted } from 'vue'
 import { useSettingStore } from '@/stores/modules/setting'
 import { useRouter, useRoute } from 'vue-router'
+import { useUserStore } from '@/stores/modules/user'
 
 const settingStore = useSettingStore()
+const userStore = useUserStore()
 
 const themeChange = theme => {
   settingStore.setTheme(theme)
