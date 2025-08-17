@@ -66,6 +66,7 @@ const getList = async ({ pageNum = 1, category = '', tags = [] }) => {
     list.value.push(...data.data.list)
   }
   total.value = data.data.total
+  statsTotal(total.value)
 }
 
 const loadMore = () => {
@@ -81,7 +82,12 @@ const getInfo = id => {
   router.push('/article/' + id)
 }
 
-defineExpose({ getList })
+const emit = defineEmits(['statsTotal'])
+const statsTotal = val => {
+  emit('statsTotal', val)
+}
+
+defineExpose({ getList, total })
 </script>
 
 <style lang="scss" scoped>
