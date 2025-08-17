@@ -1,9 +1,9 @@
 <template>
   <div class="article">
     <div class="article-item" v-for="article in list" :key="article.id">
-      <div class="article-content">
+      <div class="article-content" @click="getInfo(article.id)">
         <div class="article-image hidden-large">
-          <img src="@/assets/images/image.png" alt="" />
+          <img :src="ImgUrl + article.coverImgId" alt="" />
         </div>
         <div class="article-main">
           <div class="article-content-title">
@@ -19,7 +19,7 @@
           </div>
         </div>
         <div class="article-image hidden hidden-mini">
-          <img src="@/assets/images/image.png" alt="" />
+          <img :src="ImgUrl + article.coverImgId" alt="" />
         </div>
       </div>
       <el-divider />
@@ -38,6 +38,11 @@
 import { onMounted, ref, reactive } from 'vue'
 import { articlepage } from '@/api/article'
 import { dayjs } from 'element-plus'
+import { useRouter } from 'vue-router'
+
+const ImgUrl = import.meta.env.VITE_HTTP_BASEURL + '/file/download?fileId='
+
+const router = useRouter()
 
 const list = ref([])
 let query = reactive({
@@ -47,6 +52,10 @@ let query = reactive({
 const getList = async () => {
   let { data } = await articlepage(query)
   list.value = data.data.list
+}
+
+const getInfo = id => {
+  router.push('/article/' + id)
 }
 
 onMounted(() => {

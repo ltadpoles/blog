@@ -4,3 +4,8 @@ import http from '@/utils/http'
 export const articlepage = data => {
   return http.post('/article/page', data)
 }
+
+// 文章详情
+export const articleDetail = params => {
+  return http.get('/article/info', { params })
+}
