@@ -31,11 +31,15 @@
         <div class="article-content-footer-right">{{ article.category[0]?.name }}</div>
       </div>
     </div>
+
+    <div class="article-footer">
+      <div class="load-more" @click="loadMore" v-if="list.length < total">查看更多</div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref, reactive } from 'vue'
+import { ref, reactive } from 'vue'
 import { articlepage } from '@/api/article'
 import { dayjs } from 'element-plus'
 import { useRouter } from 'vue-router'
@@ -46,21 +50,38 @@ const router = useRouter()
 
 const list = ref([])
 let query = reactive({
-  page: 1,
-  pageSize: 10
+  pageNum: 1,
+  pageSize: 1,
+  param: {}
 })
-const getList = async () => {
+const total = ref(0)
+const getList = async ({ pageNum = 1, category = '', tags = [] }) => {
+  query.pageNum = pageNum
+  query.param.category = category
+  query.param.tags = tags
   let { data } = await articlepage(query)
-  list.value = data.data.list
+  if (pageNum === 1) {
+    list.value = data.data.list
+  } else {
+    list.value.push(...data.data.list)
+  }
+  total.value = data.data.total
+}
+
+const loadMore = () => {
+  query.pageNum += 1
+  getList({
+    pageNum: query.pageNum,
+    category: query.param.category,
+    tags: query.param.tags
+  })
 }
 
 const getInfo = id => {
   router.push('/article/' + id)
 }
 
-onMounted(() => {
-  getList()
-})
+defineExpose({ getList })
 </script>
 
 <style lang="scss" scoped>

@@ -1,7 +1,7 @@
 <template>
   <div class="view">
     <div class="view-content">
-      <article-list />
+      <article-list ref="articleRef" />
     </div>
     <div class="view-sidebar hidden-mini">
       <user />
@@ -79,7 +79,9 @@ const toTag = id => {
   router.push(`/tag/${id}`)
 }
 
+const articleRef = ref(null)
 onMounted(() => {
+  articleRef.value.getList({ category: '', tags: [] })
   getCategoryStats()
   getTagStats()
 })

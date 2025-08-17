@@ -71,6 +71,18 @@
       }
     }
   }
+
+  &-footer {
+    display: flex;
+    justify-content: center;
+    .load-more {
+      padding: 5px 10px;
+      color: var(--el-text-color-regular);
+      box-shadow: var(--el-box-shadow);
+      border-radius: 10px;
+      cursor: pointer;
+    }
+  }
 }
 
 @media screen and (min-width: 1024px) {
