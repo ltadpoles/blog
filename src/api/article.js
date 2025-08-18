@@ -9,3 +9,8 @@ export const articlepage = data => {
 export const articleDetail = params => {
   return http.get('/article/info', { params })
 }
+
+// 归档
+export const articleArchive = () => {
+  return http.get('/article/archive')
+}
