@@ -34,36 +34,32 @@ const router = useRouter()
 
 let info = reactive({
   articleCount: 0,
-  name: ''
+  name: '',
+  id: ''
 })
 const categoryList = ref([])
 const getCategoryStats = async () => {
   let { data } = await categoryStatistics()
-  let initInfo = {
-    id: '',
-    articleCount: data.data.reduce((sum, item) => sum + item.articleCount, 0),
-    name: '全部'
-  }
-  data.data.unshift(initInfo)
-  categoryList.value = data.data
-  info = route.params.id
-    ? Object.assign(
-        {},
-        categoryList.value.find(item => item.id === Number(route.params.id))
-      )
-    : initInfo
+  categoryList.value = [{ name: '全部', id: '', articleCount: 0 }, ...data.data]
+  getList(categoryList.value.find(item => String(item.id) === route.params.id))
 }
 
 const articleRef = ref(null)
 const getCategory = item => {
   router.push('/category/' + item.id)
-  info = Object.assign({}, item)
-  articleRef.value.getList({ category: item.id })
+  getList(item)
+}
+
+const getList = item => {
+  articleRef.value.getList({ category: item.id }).then(total => {
+    info.articleCount = total
+    info.name = item.name
+    info.id = item.id
+  })
 }
 
 onMounted(() => {
   getCategoryStats()
-  articleRef.value.getList({ category: route.params.id })
 })
 </script>
 

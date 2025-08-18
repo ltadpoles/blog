@@ -51,7 +51,7 @@ const router = useRouter()
 const list = ref([])
 let query = reactive({
   pageNum: 1,
-  pageSize: 1,
+  pageSize: 10,
   param: {}
 })
 const total = ref(0)
@@ -66,7 +66,7 @@ const getList = async ({ pageNum = 1, category = '', tags = [] }) => {
     list.value.push(...data.data.list)
   }
   total.value = data.data.total
-  statsTotal(total.value)
+  return data.data.total
 }
 
 const loadMore = () => {
@@ -82,12 +82,7 @@ const getInfo = id => {
   router.push('/article/' + id)
 }
 
-const emit = defineEmits(['statsTotal'])
-const statsTotal = val => {
-  emit('statsTotal', val)
-}
-
-defineExpose({ getList, total })
+defineExpose({ getList })
 </script>
 
 <style lang="scss" scoped>

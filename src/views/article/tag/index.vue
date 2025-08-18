@@ -17,14 +17,7 @@
         <div class="tag-info-left">{{ info.name }}</div>
         <div class="tag-info-right">{{ info.articleCount }}篇</div>
       </div>
-      <article-list
-        ref="articleRef"
-        @statsTotal="
-          val => {
-            info.articleCount = val
-          }
-        "
-      />
+      <article-list ref="articleRef" />
     </div>
   </div>
 </template>
@@ -41,36 +34,32 @@ const router = useRouter()
 
 let info = reactive({
   articleCount: 0,
-  name: ''
+  name: '',
+  id: ''
 })
 const tagList = ref([])
 const getTagStats = async () => {
   let { data } = await tagStatistics()
-  let initInfo = {
-    id: '',
-    name: '全部',
-    articleCount: info.articleCount
-  }
-  data.data.unshift(initInfo)
-  tagList.value = data.data
-  info = route.params.id
-    ? Object.assign(
-        {},
-        tagList.value.find(item => item.id === Number(route.params.id))
-      )
-    : initInfo
+  tagList.value = [{ name: '全部', id: '', articleCount: 0 }, ...data.data]
+  getList(tagList.value.find(item => String(item.id) === route.params.id))
 }
 
 const articleRef = ref(null)
 const getTag = item => {
   router.push('/tag/' + item.id)
-  info = Object.assign({}, item)
-  articleRef.value.getList({ tags: item.id ? [item.id] : [] })
+  getList(item)
+}
+
+const getList = item => {
+  articleRef.value.getList({ tags: item.id ? [item.id] : [] }).then(total => {
+    info.articleCount = total
+    info.name = item.name
+    info.id = item.id
+  })
 }
 
 onMounted(() => {
   getTagStats()
-  articleRef.value.getList({ tags: route.params.id ? [route.params.id] : [] })
 })
 </script>
 
