@@ -19,15 +19,11 @@
         </el-timeline-item>
       </el-timeline>
     </div>
-    <div class="view-sidebar hidden-mini">
-      <user />
-    </div>
   </div>
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import user from '@/components/user/index.vue'
 import { useRouter } from 'vue-router'
 import { articleArchive } from '@/api/article'
 import { dayjs } from 'element-plus'
