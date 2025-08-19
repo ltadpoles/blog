@@ -6,17 +6,17 @@
     <div class="user-motto">{{ userStore.user.remark }}</div>
     <div class="user-statistics">
       <div class="user-statistics-item">
-        <div class="item-count">{{ statsInfo.articles?.published }}</div>
+        <div class="item-count">{{ statsInfo.articles }}</div>
         <div class="item-title">文章</div>
       </div>
       <el-divider direction="vertical" />
       <div class="user-statistics-item">
-        <div class="item-count">{{ statsInfo.categories?.active }}</div>
+        <div class="item-count">{{ statsInfo.categories }}</div>
         <div class="item-title">分类</div>
       </div>
       <el-divider direction="vertical" />
       <div class="user-statistics-item">
-        <div class="item-count">{{ statsInfo.tags?.active }}</div>
+        <div class="item-count">{{ statsInfo.tags }}</div>
         <div class="item-title">标签</div>
       </div>
     </div>

@@ -43,8 +43,9 @@ import { ref, reactive } from 'vue'
 import { articlepage } from '@/api/article'
 import { dayjs } from 'element-plus'
 import { useRouter } from 'vue-router'
+import config from '@/config'
 
-const ImgUrl = import.meta.env.VITE_HTTP_BASEURL + '/file/download?fileId='
+const ImgUrl = config.BASEURL + '/file/download?fileId='
 
 const router = useRouter()
 
