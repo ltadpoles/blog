@@ -1,9 +1,10 @@
+import config from '@/config'
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 
 const http = axios.create({
   timeout: 3000,
-  baseURL: import.meta.env.VITE_HTTP_BASEURL
+  baseURL: config.BASEURL || '/api'
 })
 
 // 添加请求拦截器
