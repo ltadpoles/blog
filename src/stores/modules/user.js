@@ -1,6 +1,7 @@
 /*
  * @Description: 用户store
  */
+import config from '@/config'
 import { defineStore } from 'pinia'
 
 export const useUserStore = defineStore('userStore', {
@@ -15,6 +16,6 @@ export const useUserStore = defineStore('userStore', {
     }
   },
   persist: import.meta.env.SSR === false && {
-    storage: localStorage
+    storage: config.PINIASTORY
   }
 })

@@ -1,6 +1,7 @@
 /*
  * @Description: 项目配置store
  */
+import config from '@/config'
 import { defineStore } from 'pinia'
 
 export const useSettingStore = defineStore('settingStore', {
@@ -13,6 +14,6 @@ export const useSettingStore = defineStore('settingStore', {
     }
   },
   persist: import.meta.env.SSR === false && {
-    storage: localStorage
+    storage: config.PINIASTORY
   }
 })
