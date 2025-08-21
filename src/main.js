@@ -1,5 +1,6 @@
 import { ViteSSG } from 'vite-ssg'
 import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 
 import App from './App.vue'
 import { routes } from './router'
