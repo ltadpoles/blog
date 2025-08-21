@@ -7,17 +7,15 @@
       <el-button link type="primary" class="reply-action" @click="toggle">回复</el-button>
     </div>
     <div class="reply-content">{{ node.content }}</div>
+    <div class="reply-actions-like">
+      <el-button link :type="node.liked ? 'primary' : 'default'" @click="toggleLike">
+        赞 {{ node.likes || 0 }}
+      </el-button>
+    </div>
 
     <div v-if="isReplying" class="reply-box reply-content-field">
       <el-input v-model="text" type="textarea" :rows="3" :maxlength="300" show-word-limit placeholder="回复内容" />
-      <el-popover placement="bottom" width="260" trigger="click">
-        <template #reference>
-          <el-button link type="primary" class="reply-emoji-trigger">😀</el-button>
-        </template>
-        <div class="emoji-box">
-          <span class="emoji-item" v-for="e in emojiList" :key="e" @click="insert(e)">{{ e }}</span>
-        </div>
-      </el-popover>
+      <EmojiPicker @select="insert" />
       <div class="reply-actions">
         <el-button size="small" type="primary" @click="submit">提交回复</el-button>
         <el-button size="small" @click="toggle">取消</el-button>
@@ -40,10 +38,10 @@
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import defaultAvatar from '@/assets/images/avatar.jpg'
+import EmojiPicker from '@/components/emoji-picker/index.vue'
 
 const props = defineProps({
-  node: { type: Object, required: true },
-  emojiList: { type: Array, default: () => [] }
+  node: { type: Object, required: true }
 })
 const emit = defineEmits(['add-reply'])
 
@@ -68,6 +66,18 @@ const submit = () => {
   text.value = ''
   isReplying.value = false
   ElMessage.success('回复成功')
+}
+
+const toggleLike = () => {
+  const node = props.node
+  node.liked = !node.liked
+  if (typeof node.likes !== 'number') {
+    node.likes = 0
+  }
+  node.likes += node.liked ? 1 : -1
+  if (node.likes < 0) {
+    node.likes = 0
+  }
 }
 </script>
 

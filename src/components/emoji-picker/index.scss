@@ -1,0 +1,43 @@
+.emoji-trigger {
+	position: absolute;
+	right: 8px;
+	bottom: 8px;
+}
+
+.emoji-popper {
+	max-width: 420px;
+	width: 90vw;
+	box-sizing: border-box;
+}
+
+.emoji-tabs {
+	max-height: min(56vh, 420px);
+	overflow: hidden;
+}
+
+.emoji-box {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(clamp(24px, 3.2vw, 36px), 1fr));
+	gap: clamp(6px, 1.2vw, 10px);
+	padding: 6px 2px 8px;
+	max-height: min(50vh, 360px);
+	overflow: auto;
+}
+
+.emoji-item {
+	appearance: none;
+	border: none;
+	background: transparent;
+	cursor: pointer;
+	font-size: clamp(18px, 2.5vw, 22px);
+	line-height: 1.2;
+	padding: 4px 2px;
+	border-radius: 6px;
+	transition: background-color .15s ease;
+}
+
+.emoji-item:hover {
+	background-color: var(--el-fill-color-light);
+}
+
+

@@ -10,45 +10,7 @@
         </div>
         <el-divider />
 
-        <el-form ref="formRef" :model="form" :rules="rules" label-width="0">
-          <div class="form-row">
-            <el-form-item prop="nickname" class="form-col">
-              <el-input v-model="form.nickname" placeholder="昵称（必填）" maxlength="30" show-word-limit />
-            </el-form-item>
-
-            <el-form-item prop="email" class="form-col">
-              <el-input v-model="form.email" placeholder="邮箱（可选）" />
-            </el-form-item>
-
-            <el-form-item prop="website" class="form-col">
-              <el-input v-model="form.website" placeholder="网站（可选）" />
-            </el-form-item>
-          </div>
-
-          <el-form-item prop="content" class="content-field">
-            <el-input
-              v-model="form.content"
-              type="textarea"
-              :rows="5"
-              maxlength="500"
-              show-word-limit
-              placeholder="留言内容（必填，支持 Emoji）"
-            />
-            <el-popover placement="bottom" width="260" trigger="click">
-              <template #reference>
-                <el-button link type="primary" class="emoji-trigger">😀</el-button>
-              </template>
-              <div class="emoji-box">
-                <span class="emoji-item" v-for="e in emojiList" :key="e" @click="insertEmoji(e)">{{ e }}</span>
-              </div>
-            </el-popover>
-          </el-form-item>
-
-          <el-form-item>
-            <el-button type="primary" :loading="submitting" @click="handleSubmit">提交</el-button>
-            <el-button @click="handleReset">重置</el-button>
-          </el-form-item>
-        </el-form>
+        <comment-form v-model="form" :loading="submitting" @submit="handleSubmit" @reset="handleReset" />
       </div>
 
       <div class="card">
@@ -60,63 +22,69 @@
         </div>
         <el-divider />
 
-        <div class="message-list">
-          <div class="message-item" v-for="item in messages" :key="item.id">
-            <div class="message-item-header">
-              <div class="message-header-left">
-                <el-avatar class="message-avatar" :src="item.avatar || defaultAvatar" :size="32" />
-                <div class="message-nickname">
-                  <a v-if="item.website" :href="formatWebsite(item.website)" target="_blank" rel="noopener">
-                    {{ item.nickname }}
-                  </a>
-                  <span v-else>{{ item.nickname }}</span>
+        <ul class="message-list">
+          <li class="message-item" v-for="item in messages" :key="item.id">
+            <div class="message-item-inner">
+              <el-avatar class="message-avatar" :src="item.avatar || defaultAvatar" :size="40" />
+              <div class="message-body">
+                <header class="message-header">
+                  <h4 class="message-nickname">
+                    <a v-if="item.website" :href="formatWebsite(item.website)" target="_blank" rel="noopener">
+                      {{ item.nickname }}
+                    </a>
+                    <span v-else>
+                      {{ item.nickname }}
+                    </span>
+                  </h4>
+                  <div class="message-meta">
+                    <time class="message-time" :datetime="item.createdAt">{{ item.createdAt }}</time>
+                    <span v-if="item.location" class="message-dot">·</span>
+                    <span v-if="item.location" class="message-location">{{ item.location }}</span>
+                  </div>
+                </header>
+
+                <p class="message-content">{{ item.content }}</p>
+
+                <div class="message-actions">
+                  <el-button
+                    link
+                    :type="item.liked ? 'primary' : 'default'"
+                    class="action-like"
+                    @click="toggleLikeMessage(item.id)"
+                  >
+                    赞 {{ item.likes || 0 }}
+                  </el-button>
+                  <el-button link type="primary" @click="toggleReply(item.id)">回复</el-button>
+                </div>
+
+                <div v-if="replying[item.id]" class="reply-box">
+                  <el-input
+                    v-model="replyContent[item.id]"
+                    type="textarea"
+                    :rows="3"
+                    maxlength="300"
+                    show-word-limit
+                    placeholder="回复内容"
+                  />
+                  <emoji-picker @select="e => insertReplyEmoji(item.id, e)" />
+                  <div class="reply-actions">
+                    <el-button size="small" type="primary" @click="submitReply(item.id)">提交回复</el-button>
+                    <el-button size="small" @click="toggleReply(item.id)">取消</el-button>
+                  </div>
+                </div>
+
+                <div v-if="item.replies && item.replies.length" class="reply-list">
+                  <ReplyItem v-for="rep in getVisibleReplies(item)" :key="rep.id" :node="rep" @add-reply="onAddReply" />
+                  <div v-if="item.replies.length > maxCollapsedReplies" class="reply-more">
+                    <el-button link type="primary" @click="toggleRepliesExpand(item.id)">
+                      {{ getMoreLabel(item) }}
+                    </el-button>
+                  </div>
                 </div>
               </div>
-              <div class="message-time">{{ item.createdAt }}</div>
             </div>
-            <div class="message-content">{{ item.content }}</div>
-            <div class="message-actions">
-              <el-button link type="primary" @click="toggleReply(item.id)">回复</el-button>
-            </div>
-
-            <div v-if="replying[item.id]" class="reply-box">
-              <el-input
-                v-model="replyContent[item.id]"
-                type="textarea"
-                :rows="3"
-                maxlength="300"
-                show-word-limit
-                placeholder="回复内容"
-              />
-
-              <el-popover placement="bottom" width="260" trigger="click">
-                <template #reference>
-                  <el-button link type="primary" class="emoji-trigger">😀</el-button>
-                </template>
-                <div class="emoji-box">
-                  <span class="emoji-item" v-for="e in emojiList" :key="e" @click="insertReplyEmoji(item.id, e)">
-                    {{ e }}
-                  </span>
-                </div>
-              </el-popover>
-
-              <div class="reply-actions">
-                <el-button size="small" type="primary" @click="submitReply(item.id)">提交回复</el-button>
-                <el-button size="small" @click="toggleReply(item.id)">取消</el-button>
-              </div>
-            </div>
-
-            <div v-if="item.replies && item.replies.length" class="reply-list">
-              <ReplyItem
-                v-for="rep in item.replies"
-                :key="rep.id"
-                :node="rep"
-                :emoji-list="emojiList"
-                @add-reply="onAddReply"
-              />
-            </div>
-          </div>
-        </div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -126,8 +94,9 @@
 import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import defaultAvatar from '@/assets/images/avatar.jpg'
+import CommentForm from '@/components/comment-form/index.vue'
+import EmojiPicker from '@/components/emoji-picker/index.vue'
 
-const formRef = ref(null)
 const submitting = ref(false)
 
 const form = reactive({
@@ -137,45 +106,7 @@ const form = reactive({
   content: ''
 })
 
-const validateContent = (rule, value, callback) => {
-  if (!value || !value.trim()) {
-    return callback(new Error('请输入留言内容'))
-  }
-  if (value.length < 2) {
-    return callback(new Error('留言内容至少 2 个字符'))
-  }
-  callback()
-}
-
-const rules = {
-  nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
-  email: [{ type: 'email', message: '邮箱格式不正确', trigger: 'blur' }],
-  website: [
-    {
-      validator: (rule, value, callback) => {
-        if (!value) {
-          return callback()
-        }
-        try {
-          // 允许用户输入不带协议的域名，这里做宽松校验
-          const withProtocol = /^https?:\/\//i.test(value) ? value : `https://${value}`
-          new URL(withProtocol)
-          callback()
-        } catch {
-          callback(new Error('网址格式不正确'))
-        }
-      },
-      trigger: 'blur'
-    }
-  ],
-  content: [{ required: true, validator: validateContent, trigger: 'change' }]
-}
-
-const emojiList = ['😀', '😁', '😂', '🤣', '😊', '😍', '🤔', '👍', '🎉', '🔥', '🌟', '💡', '🚀', '🙏', '🙌', '😎']
-
-const insertEmoji = e => {
-  form.content += e
-}
+// 使用 emoji-picker 内置的默认表情集合，无需在此定义精简列表
 
 const messages = ref([
   {
@@ -184,14 +115,70 @@ const messages = ref([
     website: 'https://example.com',
     content: '博客很棒！🚀',
     createdAt: '2024-10-01 12:30',
+    location: '四川 成都',
     avatar: '',
+    likes: 2,
+    liked: false,
     replies: [
       {
         id: 11,
         nickname: '作者',
         content: '谢谢支持！😊',
         createdAt: '2024-10-01 13:00',
-        avatar: ''
+        location: '四川 成都',
+        avatar: '',
+        likes: 1,
+        liked: false
+      },
+      {
+        id: 11,
+        nickname: '作者',
+        content: '谢谢支持！😊',
+        createdAt: '2024-10-01 13:00',
+        location: '四川 成都',
+        avatar: '',
+        likes: 1,
+        liked: false
+      },
+      {
+        id: 11,
+        nickname: '作者',
+        content: '谢谢支持！😊',
+        createdAt: '2024-10-01 13:00',
+        location: '四川 成都',
+        avatar: '',
+        likes: 1,
+        liked: false
+      },
+      {
+        id: 11,
+        nickname: '作者',
+        content: '谢谢支持！😊',
+        createdAt: '2024-10-01 13:00',
+        location: '四川 成都',
+        avatar: '',
+        likes: 1,
+        liked: false
+      },
+      {
+        id: 11,
+        nickname: '作者',
+        content: '谢谢支持！😊',
+        createdAt: '2024-10-01 13:00',
+        location: '四川 成都',
+        avatar: '',
+        likes: 1,
+        liked: false
+      },
+      {
+        id: 11,
+        nickname: '作者',
+        content: '谢谢支持！😊',
+        createdAt: '2024-10-01 13:00',
+        location: '四川 成都',
+        avatar: '',
+        likes: 1,
+        liked: false
       }
     ]
   },
@@ -201,7 +188,10 @@ const messages = ref([
     website: '',
     content: '学到了很多，感谢分享！🎉',
     createdAt: '2024-10-02 09:20',
+    location: '北京',
     avatar: '',
+    likes: 0,
+    liked: false,
     replies: []
   }
 ])
@@ -215,6 +205,8 @@ const formatWebsite = website => {
 
 const replying = reactive({})
 const replyContent = reactive({})
+const repliesExpanded = reactive({})
+const maxCollapsedReplies = 3
 
 const toggleReply = id => {
   replying[id] = !replying[id]
@@ -241,7 +233,9 @@ const submitReply = id => {
     id: Date.now(),
     nickname: '我',
     content,
-    createdAt: new Date().toLocaleString()
+    createdAt: new Date().toLocaleString(),
+    likes: 0,
+    liked: false
   }
   if (!Array.isArray(target.replies)) {
     target.replies = []
@@ -263,7 +257,9 @@ const onAddReply = (targetId, content) => {
     avatar: '',
     content,
     createdAt: new Date().toLocaleString(),
-    replies: []
+    replies: [],
+    likes: 0,
+    liked: false
   }
   if (!Array.isArray(target.replies)) {
     target.replies = []
@@ -286,30 +282,60 @@ const findNodeById = (list, id) => {
   return null
 }
 
-const handleSubmit = () => {
-  formRef.value.validate(async valid => {
-    if (!valid) {
-      return
+const toggleRepliesExpand = id => {
+  repliesExpanded[id] = !repliesExpanded[id]
+}
+
+const getVisibleReplies = item => {
+  if (!Array.isArray(item.replies)) {
+    return []
+  }
+  if (repliesExpanded[item.id]) {
+    return item.replies
+  }
+  return item.replies.slice(0, maxCollapsedReplies)
+}
+
+const toggleLikeMessage = id => {
+  const target = messages.value.find(m => m.id === id)
+  if (!target) {
+    return
+  }
+  target.liked = !target.liked
+  if (typeof target.likes !== 'number') {
+    target.likes = 0
+  }
+  target.likes += target.liked ? 1 : -1
+  if (target.likes < 0) {
+    target.likes = 0
+  }
+}
+
+const getMoreLabel = item => {
+  return repliesExpanded[item.id] ? '收起' : `展开更多 ${item.replies.length - maxCollapsedReplies} 条`
+}
+
+const handleSubmit = async () => {
+  submitting.value = true
+  try {
+    const newItem = {
+      id: Date.now(),
+      nickname: form.nickname,
+      website: form.website,
+      content: form.content,
+      createdAt: new Date().toLocaleString(),
+      location: '四川 成都',
+      likes: 0,
+      liked: false
     }
-    submitting.value = true
-    try {
-      // 使用本地模拟数据，直接更新列表
-      const newItem = {
-        id: Date.now(),
-        nickname: form.nickname,
-        website: form.website,
-        content: form.content,
-        createdAt: new Date().toLocaleString()
-      }
-      messages.value.unshift(newItem)
-      ElMessage.success('留言成功')
-      handleReset()
-    } catch {
-      // 错误提示已在拦截器处理，这里无需重复提示
-    } finally {
-      submitting.value = false
-    }
-  })
+    messages.value.unshift(newItem)
+    ElMessage.success('留言成功')
+    handleReset()
+  } catch {
+    ElMessage.error('提交失败')
+  } finally {
+    submitting.value = false
+  }
 }
 
 const handleReset = () => {
@@ -322,115 +348,4 @@ const handleReset = () => {
 
 <style lang="scss" scoped>
 @use './index.scss' as *;
-.emoji-trigger {
-  position: absolute;
-  right: 8px;
-  bottom: 8px;
-}
-
-.emoji-box {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  max-width: 240px;
-}
-
-.emoji-item {
-  cursor: pointer;
-  font-size: 20px;
-}
-
-.message-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.message-item {
-  padding: 6px 0;
-  border-bottom: 1px dashed var(--el-border-color);
-}
-
-.message-item-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 6px;
-}
-
-.message-nickname a {
-  color: var(--el-color-primary);
-}
-
-.message-time {
-  color: var(--el-text-color-secondary);
-  font-size: 12px;
-}
-
-.message-content {
-  white-space: pre-wrap;
-  line-height: 1.7;
-}
-
-.message-actions {
-  margin-top: 6px;
-}
-
-.reply-box {
-  position: relative;
-  margin-top: 10px;
-}
-
-.reply-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 8px;
-}
-
-.reply-list {
-  margin-top: 10px;
-  padding-left: 12px;
-  border-left: 2px solid var(--el-border-color-light);
-}
-
-.reply-item {
-  padding: 6px 0;
-}
-
-.reply-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: var(--el-text-color-secondary);
-}
-
-.reply-nickname {
-  color: var(--el-color-primary);
-}
-
-.reply-content {
-  white-space: pre-wrap;
-  line-height: 1.6;
-}
-
-.content-field {
-  position: relative;
-}
-
-.form-row {
-  display: flex;
-  gap: 10px;
-}
-
-.form-col {
-  flex: 1;
-}
-
-@media screen and (max-width: 768px) {
-  .form-row {
-    flex-direction: column;
-  }
-}
 </style>

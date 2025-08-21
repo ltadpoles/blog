@@ -1,0 +1,30 @@
+.form-row {
+	display: flex;
+	gap: 10px;
+	margin-bottom: 6px;
+}
+
+.form-col {
+	flex: 1;
+}
+
+.content-field {
+	position: relative;
+	.el-textarea__inner {
+		padding-right: 48px;
+	}
+	.el-input__count {
+		right: 32px;
+	}
+}
+
+@media screen and (max-width: 768px) {
+	.form-col + .form-col {
+		margin-top: 8px;
+	}
+	.form-row {
+		flex-direction: column;
+	}
+}
+
+
