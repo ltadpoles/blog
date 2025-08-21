@@ -1,0 +1,58 @@
+.placeholder-unify ::placeholder {
+  font-size: 0.95rem;
+  color: var(--el-text-color-secondary);
+}
+
+.message-avatar {
+  border: 1px solid var(--el-border-color-light);
+}
+
+.message-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.reply-avatar {
+  border: 1px solid var(--el-border-color-light);
+}
+
+.form-row {
+  margin-bottom: 6px;
+}
+
+.content-field {
+  position: relative;
+  .el-textarea__inner {
+    padding-right: 48px; /* 预留 Emoji 按钮位置并与字数分隔 */
+  }
+  .el-input__count {
+    right: 32px; /* 避开 emoji 按钮 */
+  }
+}
+
+.reply-box {
+  position: relative;
+  margin-top: 10px;
+  .el-textarea__inner {
+    padding-right: 48px;
+  }
+  .el-input__count {
+    right: 32px;
+  }
+}
+
+/* 统一输入框字体大小 */
+.el-input__inner,
+.el-textarea__inner {
+  font-size: 1rem;
+}
+
+/* 小屏竖排在页面已有媒体查询，这里补充间距 */
+@media screen and (max-width: 768px) {
+  .form-col + .form-col {
+    margin-top: 8px;
+  }
+}
+
+

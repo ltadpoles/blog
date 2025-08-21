@@ -1,7 +1,30 @@
 :root {
   --el-font-size-base: 1rem;
+  --el-font-family: 'ChillKai', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 
 .el-divider--horizontal {
   margin: 14px 0;
+}
+
+/* 统一组件与表单的 font-family */
+body,
+.el-button,
+.el-input__inner,
+.el-textarea__inner,
+.el-form-item__label,
+.el-select,
+.el-dropdown,
+.el-pagination,
+.el-message,
+.el-table {
+  font-family: var(--el-font-family);
+}
+
+/* 统一占位符字体 */
+::placeholder,
+.el-input__inner::placeholder,
+.el-textarea__inner::placeholder {
+  font-family: var(--el-font-family);
 }

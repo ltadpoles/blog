@@ -36,6 +36,11 @@ export const routes = [
         path: 'tag/:id?',
         name: 'tag',
         component: () => import('@/views/article/tag/index.vue')
+      },
+      {
+        path: 'message',
+        name: 'Message',
+        component: () => import('@/views/message/index.vue')
       }
     ]
   }
