@@ -19,11 +19,14 @@
         v-model="localForm.content"
         type="textarea"
         :rows="5"
+        resize="none"
         maxlength="500"
         show-word-limit
         placeholder="留言内容（必填，支持 Emoji）"
       />
-      <emoji-picker :emoji-list="emojiList" @select="appendEmoji" />
+      <div class="emoji-wrapper">
+        <emoji-picker :emoji-list="emojiList" @select="appendEmoji" />
+      </div>
     </el-form-item>
 
     <el-form-item>
@@ -120,6 +123,6 @@ const onReset = () => {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @use './index.scss' as *;
 </style>
