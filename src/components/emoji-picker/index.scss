@@ -1,30 +1,5 @@
 .emoji-container {
-  // background: #ffffff; /* 纯白色背景 */
-  border-radius: 8px;
   overflow: hidden;
-}
-
-.emoji-tab-group {
-  padding: 6px 10px 0;
-}
-
-:deep(.el-tabs__nav-wrap::after) {
-  display: none; /* 去除底部边框 */
-}
-
-:deep(.el-tabs__item) {
-  font-size: 1.2rem; /* 增大标签表情大小 */
-  padding: 0 12px !important;
-  transition: all 0.2s;
-  border-radius: 4px 4px 0 0;
-
-  &.is-active {
-    background: #fff;
-  }
-
-  &:hover {
-    background: #f0f0f0;
-  }
 }
 
 .emoji-box {
@@ -35,7 +10,6 @@
   max-height: 280px;
   overflow-y: auto;
   overflow-x: hidden;
-  background: #fff;
   box-sizing: border-box;
 
   &::-webkit-scrollbar {
@@ -74,15 +48,5 @@
 
   &:active {
     transform: scale(1.15);
-  }
-}
-
-.emoji-trigger {
-  font-size: 20px;
-  padding: 6px 10px;
-  transition: all 0.2s;
-
-  &:hover {
-    transform: scale(1.1);
   }
 }
