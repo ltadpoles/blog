@@ -1,12 +1,10 @@
 .emoji-container {
-  background: #ffffff; /* 纯白色背景 */
+  // background: #ffffff; /* 纯白色背景 */
   border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
   overflow: hidden;
 }
 
 .emoji-tab-group {
-  background: #f9f9f9;
   padding: 6px 10px 0;
 }
 
@@ -15,7 +13,7 @@
 }
 
 :deep(.el-tabs__item) {
-  font-size: 24px; /* 增大标签表情大小 */
+  font-size: 1.2rem; /* 增大标签表情大小 */
   padding: 0 12px !important;
   transition: all 0.2s;
   border-radius: 4px 4px 0 0;
@@ -56,25 +54,21 @@
 }
 
 .emoji-item {
-  font-size: 28px; /* 增大表情大小 */
+  font-size: 20px; /* 增大表情大小 */
   background: none;
   border: none;
   cursor: pointer;
   border-radius: 50%; /* 圆形设计 */
-  width: 36px;
-  height: 36px;
+  width: 26px;
+  height: 26px;
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
 
-  /* 模拟黄色背景效果 */
-  background: linear-gradient(145deg, #fff9d0, #ffeb3b);
-
   &:hover {
     transform: scale(1.25); /* 悬停放大 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     z-index: 1;
   }
 
@@ -84,7 +78,7 @@
 }
 
 .emoji-trigger {
-  font-size: 22px;
+  font-size: 20px;
   padding: 6px 10px;
   transition: all 0.2s;
 
