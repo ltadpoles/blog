@@ -1,150 +1,265 @@
-.placeholder-unify ::placeholder {
-  font-size: 0.95rem;
-  color: var(--el-text-color-secondary);
-}
-
-.board-avatar {
-  border: 1px solid var(--el-border-color-light);
-}
-
-.board-header-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.reply-avatar {
-  border: 1px solid var(--el-border-color-light);
-}
-
-.form-row {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 6px;
-}
-
-.content-field {
-  position: relative;
-  .el-textarea__inner {
-    padding-right: 48px; /* 预留 Emoji 按钮位置并与字数分隔 */
+// 留言板样式
+.board {
+  &-flex {
+    display: flex;
+    align-items: center;
+    gap: 3px;
   }
-  .el-input__count {
-    right: 32px; /* 避开 emoji 按钮 */
+
+  &-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &-item {
+    padding: 0;
+
+    &-inner {
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 8px;
+      padding: 12px 10px;
+      border-radius: 10px;
+      background: var(--el-fill-color-blank);
+      box-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.04),
+        0 4px 10px rgba(0, 0, 0, 0.03);
+      border: 1px solid var(--el-border-color-light);
+    }
+  }
+
+  &-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 1.1rem;
+  }
+
+  &-nickname {
+    margin: 0;
+    font-weight: 600;
+    line-height: 1.3;
+
+    .nickname-link {
+      color: var(--el-color-primary);
+      text-decoration: none;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &-meta {
+    color: var(--el-text-color-secondary);
+    font-size: 0.85rem;
+  }
+
+  &-location {
+    white-space: nowrap;
+  }
+
+  &-content {
+    margin: 6px 0 0;
+    white-space: pre-wrap;
+    line-height: 1.7;
+  }
+
+  &-actions {
+    margin-top: 8px;
+    color: var(--el-text-color-secondary);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 0.9rem;
+  }
+
+  &-time {
+    color: var(--el-text-color-secondary);
+  }
+
+  &-action-item {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: var(--el-color-primary);
+    }
+
+    .svg-icon {
+      transition: transform 0.2s ease;
+
+      &.liked {
+        color: var(--el-color-primary);
+      }
+
+      &.reply-active {
+        color: var(--el-color-primary);
+      }
+    }
+
+    &:hover .svg-icon {
+      transform: scale(1.1);
+    }
+
+    &.reply-active {
+      color: var(--el-color-primary);
+    }
+
+    &.liked {
+      color: var(--el-color-primary);
+    }
   }
 }
 
-.reply-box {
-  position: relative;
-  margin-top: 10px;
-  .el-textarea__inner {
-    padding-right: 48px;
+// 回复相关样式
+.reply {
+  &-box {
+    position: relative;
+    margin-top: 10px;
+
+    .el-textarea__inner {
+      padding-right: 48px;
+    }
+
+    .el-input__count {
+      right: 32px;
+    }
   }
-  .el-input__count {
-    right: 32px;
+
+  &-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  &-list {
+    margin-top: 10px;
+
+    &-item {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding: 8px 0;
+      transition: background-color 0.2s ease;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  &-avatar {
+    align-self: flex-start;
+  }
+
+  &-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+  }
+
+  &-nickname {
+    font-weight: 600;
+    color: var(--el-color-primary);
+  }
+
+  &-reply-to {
+    color: var(--el-text-color-secondary);
+    font-size: 0.9rem;
+  }
+
+  &-time {
+    color: var(--el-text-color-secondary);
+    font-size: 0.85rem;
+  }
+
+  &-content {
+    white-space: pre-wrap;
+    line-height: 1.6;
+    font-size: 0.9rem;
+  }
+
+  &-more {
+    margin-top: 8px;
+    text-align: center;
+
+    .el-button {
+      color: var(--el-text-color-secondary);
+      font-size: 0.85rem;
+
+      &:hover {
+        color: var(--el-color-primary);
+      }
+    }
   }
 }
 
-/* 表单列自适应 */
-.form-col {
-  flex: 1;
+// 表单相关样式
+.form {
+  &-col {
+    flex: 1;
+  }
 }
 
-/* Emoji 选择器样式已迁移至 components/emoji-picker */
-
-/* 留言列表与条目 */
-.board-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.board-item { padding: 0; }
-
-.board-item-inner {
-  display: grid;
-  grid-template-columns: 40px 1fr;
-  gap: 12px;
-  padding: 12px 10px;
-  border-radius: 10px;
-  background: var(--el-fill-color-blank);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 10px rgba(0,0,0,0.03);
-  border: 1px solid var(--el-border-color-light);
-}
-
-.board-header { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
-
-.board-nickname { margin: 0; font-weight: 600; line-height: 1.3; }
-.board-nickname a { color: var(--el-color-primary); }
-
-.board-meta { display: flex; align-items: center; gap: 6px; color: var(--el-text-color-secondary); font-size: 12px; }
-.board-dot { opacity: .6; }
-.board-location { white-space: nowrap; }
-
-.board-time {
-  color: var(--el-text-color-secondary);
-  font-size: 12px;
-}
-
-.board-content { margin: 6px 0 0; white-space: pre-wrap; line-height: 1.7; }
-
-.board-actions { margin-top: 8px; }
-
-/* 回复区域 */
-.reply-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 8px;
-}
-
-.reply-list {
-  margin-top: 10px;
-  padding-left: 12px;
-  border-left: 2px solid var(--el-border-color-light);
-}
-
-.reply-more { margin-top: 6px; }
-
-.reply-actions-like { margin-top: 4px; }
-
-.reply-item {
-  padding: 6px 0;
-}
-
-.reply-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: var(--el-text-color-secondary);
-}
-
-.reply-nickname {
-  color: var(--el-color-primary);
-}
-
-.reply-content {
-  white-space: pre-wrap;
-  line-height: 1.6;
-}
-
-/* 统一输入框字体大小 */
+// 统一输入框样式
 .el-input__inner,
 .el-textarea__inner {
   font-size: 1rem;
 }
 
-/* 小屏竖排在页面已有媒体查询，这里补充间距 */
+// 占位符统一样式
+.placeholder-unify ::placeholder {
+  font-size: 0.95rem;
+  color: var(--el-text-color-secondary);
+}
+
+// 响应式设计
 @media screen and (max-width: 768px) {
   .form-col + .form-col {
     margin-top: 8px;
   }
 
-  .form-row {
-    flex-direction: column;
+  .board {
+    &-item-inner {
+      grid-template-columns: 28px 1fr;
+      gap: 6px;
+      padding: 10px 8px;
+    }
+
+    &-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+
+    &-actions {
+      gap: 12px;
+      font-size: 0.85rem;
+    }
+  }
+
+  .reply {
+    &-list-item {
+      grid-template-columns: 20px 1fr;
+      gap: 6px;
+      padding: 6px 0;
+    }
   }
 }
-
-

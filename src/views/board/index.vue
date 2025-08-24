@@ -1,18 +1,19 @@
 <template>
   <div class="view">
     <div class="view-content">
+      <!-- 留言表单卡片 -->
       <div class="card">
         <div class="card-header">
           <div class="card-header-left">
-            <SvgIcon name="component" />
+            <SvgIcon name="board" />
             <span>留言板</span>
           </div>
         </div>
         <el-divider />
-
         <comment-form v-model="form" :loading="submitting" @submit="handleSubmit" @reset="handleReset" />
       </div>
 
+      <!-- 留言列表卡片 -->
       <div class="card">
         <div class="card-header">
           <div class="card-header-left">
@@ -25,58 +26,113 @@
         <ul class="board-list">
           <li class="board-item" v-for="item in messages" :key="item.id">
             <div class="board-item-inner">
-              <el-avatar class="board-avatar" :src="item.avatar || defaultAvatar" :size="40" />
+              <el-avatar class="board-avatar" :src="item.avatar || defaultAvatar" :size="32" />
               <div class="board-body">
-                <header class="board-header">
+                <!-- 留言头部信息 -->
+                <div class="board-header">
                   <h4 class="board-nickname">
-                    <a v-if="item.website" :href="formatWebsite(item.website)" target="_blank" rel="noopener">
+                    <a v-if="item.website" @click="formatWebsite(item.website)" class="nickname-link">
                       {{ item.nickname }}
                     </a>
-                    <span v-else>
-                      {{ item.nickname }}
-                    </span>
+                    <span v-else>{{ item.nickname }}</span>
                   </h4>
                   <div class="board-meta">
-                    <time class="board-time" :datetime="item.createdAt">{{ item.createdAt }}</time>
-                    <span v-if="item.location" class="board-dot">·</span>
                     <span v-if="item.location" class="board-location">{{ item.location }}</span>
                   </div>
-                </header>
-
-                <p class="board-content">{{ item.content }}</p>
-
-                <div class="board-actions">
-                  <el-button
-                    link
-                    :type="item.liked ? 'primary' : 'default'"
-                    class="action-like"
-                    @click="toggleLikeMessage(item.id)"
-                  >
-                    赞 {{ item.likes || 0 }}
-                  </el-button>
-                  <el-button link type="primary" @click="toggleReply(item.id)">回复</el-button>
                 </div>
 
+                <!-- 留言内容 -->
+                <p class="board-content">{{ item.content }}</p>
+
+                <!-- 留言操作 -->
+                <div class="board-actions">
+                  <span class="board-time">{{ item.createdAt }}</span>
+                  <div class="board-action-item" @click="toggleLike(item.id)" :class="{ liked: item.liked }">
+                    <SvgIcon name="like" :class="{ liked: item.liked }" />
+                    <span>{{ item.likes || 0 }}</span>
+                  </div>
+                  <div
+                    class="board-action-item"
+                    @click="toggleReply(item.id)"
+                    :class="{ 'reply-active': replying[item.id] }"
+                  >
+                    <SvgIcon name="message" :class="{ 'reply-active': replying[item.id] }" />
+                    <span>{{ replying[item.id] ? '取消回复' : '回复' }}</span>
+                  </div>
+                </div>
+
+                <!-- 回复输入框 -->
                 <div v-if="replying[item.id]" class="reply-box">
                   <el-input
                     v-model="replyContent[item.id]"
                     type="textarea"
                     :rows="3"
-                    maxlength="300"
+                    maxlength="500"
                     show-word-limit
                     placeholder="回复内容"
                   />
                   <emoji-picker @select="e => insertReplyEmoji(item.id, e)" />
                   <div class="reply-actions">
                     <el-button size="small" type="primary" @click="submitReply(item.id)">提交回复</el-button>
-                    <el-button size="small" @click="toggleReply(item.id)">取消</el-button>
                   </div>
                 </div>
 
+                <!-- 回复列表 -->
                 <div v-if="item.replies && item.replies.length" class="reply-list">
-                  <ReplyItem v-for="rep in getVisibleReplies(item)" :key="rep.id" :node="rep" @add-reply="onAddReply" />
+                  <div v-for="reply in getDisplayReplies(item)" :key="reply.id" class="reply-list-item">
+                    <el-avatar class="reply-avatar" :src="reply.avatar || defaultAvatar" :size="24" />
+                    <div class="reply-content-wrapper">
+                      <div class="reply-header">
+                        <span class="reply-nickname">{{ reply.nickname }}</span>
+                        <span class="reply-reply-to">回复 {{ item.nickname }}</span>
+                        <span class="reply-time">{{ reply.createdAt }}</span>
+                      </div>
+                      <div class="reply-content">{{ reply.content }}</div>
+                      <div class="reply-actions">
+                        <div
+                          class="board-action-item"
+                          @click="toggleLikeReply(item.id, reply.id)"
+                          :class="{ liked: reply.liked }"
+                        >
+                          <SvgIcon name="like" :class="{ liked: reply.liked }" />
+                          <span>{{ reply.likes || 0 }}</span>
+                        </div>
+                        <div
+                          class="board-action-item"
+                          @click="toggleReplyToReply(item.id, reply.id)"
+                          :class="{ 'reply-active': replyingToReply[`${item.id}-${reply.id}`] }"
+                        >
+                          <SvgIcon
+                            name="message"
+                            :class="{ 'reply-active': replyingToReply[`${item.id}-${reply.id}`] }"
+                          />
+                          <span>{{ replyingToReply[`${item.id}-${reply.id}`] ? '取消回复' : '回复' }}</span>
+                        </div>
+                      </div>
+
+                      <!-- 回复的回复输入框 -->
+                      <div v-if="replyingToReply[`${item.id}-${reply.id}`]" class="reply-box">
+                        <el-input
+                          v-model="replyToReplyContent[`${item.id}-${reply.id}`]"
+                          type="textarea"
+                          :rows="3"
+                          maxlength="500"
+                          show-word-limit
+                          placeholder="回复内容"
+                        />
+                        <emoji-picker @select="e => insertReplyToReplyEmoji(item.id, reply.id, e)" />
+                        <div class="reply-actions">
+                          <el-button size="small" type="primary" @click="submitReplyToReply(item.id, reply.id)">
+                            提交回复
+                          </el-button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 展开/收起更多回复 -->
                   <div v-if="item.replies.length > maxCollapsedReplies" class="reply-more">
-                    <el-button link type="primary" @click="toggleRepliesExpand(item.id)">
+                    <el-button type="text" size="small" @click="toggleRepliesExpand(item.id)">
                       {{ getMoreLabel(item) }}
                     </el-button>
                   </div>
@@ -106,8 +162,7 @@ const form = reactive({
   content: ''
 })
 
-// 使用 emoji-picker 内置的默认表情集合，无需在此定义精简列表
-
+// 模拟留言数据
 const messages = ref([
   {
     id: 1,
@@ -128,57 +183,19 @@ const messages = ref([
         location: '四川 成都',
         avatar: '',
         likes: 1,
-        liked: false
+        liked: false,
+        replies: []
       },
       {
-        id: 11,
-        nickname: '作者',
-        content: '谢谢支持！😊',
-        createdAt: '2024-10-01 13:00',
-        location: '四川 成都',
+        id: 12,
+        nickname: '游荡de蝌蚪',
+        content: '这个就是厉害的',
+        createdAt: '2024-10-01 14:00',
+        location: '北京',
         avatar: '',
-        likes: 1,
-        liked: false
-      },
-      {
-        id: 11,
-        nickname: '作者',
-        content: '谢谢支持！😊',
-        createdAt: '2024-10-01 13:00',
-        location: '四川 成都',
-        avatar: '',
-        likes: 1,
-        liked: false
-      },
-      {
-        id: 11,
-        nickname: '作者',
-        content: '谢谢支持！😊',
-        createdAt: '2024-10-01 13:00',
-        location: '四川 成都',
-        avatar: '',
-        likes: 1,
-        liked: false
-      },
-      {
-        id: 11,
-        nickname: '作者',
-        content: '谢谢支持！😊',
-        createdAt: '2024-10-01 13:00',
-        location: '四川 成都',
-        avatar: '',
-        likes: 1,
-        liked: false
-      },
-      {
-        id: 11,
-        nickname: '作者',
-        content: '谢谢支持！😊',
-        createdAt: '2024-10-01 13:00',
-        location: '四川 成都',
-        avatar: '',
-        likes: 1,
-        liked: false
+        likes: 0,
+        liked: false,
+        replies: []
       }
     ]
   },
@@ -196,18 +213,25 @@ const messages = ref([
   }
 ])
 
-const formatWebsite = website => {
-  if (!website) {
-    return ''
-  }
-  return /^https?:\/\//i.test(website) ? website : `https://${website}`
-}
-
+// 响应式状态
 const replying = reactive({})
 const replyContent = reactive({})
 const repliesExpanded = reactive({})
 const maxCollapsedReplies = 3
 
+// 回复的回复状态
+const replyingToReply = reactive({})
+const replyToReplyContent = reactive({})
+
+// 格式化网站链接
+const formatWebsite = website => {
+  if (!website) {
+    return
+  }
+  window.open(/^https?:\/\//i.test(website) ? website : `https://${website}`, '_blank')
+}
+
+// 切换回复输入框
 const toggleReply = id => {
   replying[id] = !replying[id]
   if (replying[id] && !replyContent[id]) {
@@ -215,28 +239,34 @@ const toggleReply = id => {
   }
 }
 
+// 插入表情到回复
 const insertReplyEmoji = (id, e) => {
   replyContent[id] = (replyContent[id] || '') + e
 }
 
+// 提交回复
 const submitReply = id => {
   const content = (replyContent[id] || '').trim()
   if (!content) {
     ElMessage.warning('请输入回复内容')
     return
   }
+
   const target = messages.value.find(m => m.id === id)
   if (!target) {
     return
   }
+
   const newReply = {
     id: Date.now(),
     nickname: '我',
     content,
     createdAt: new Date().toLocaleString(),
     likes: 0,
-    liked: false
+    liked: false,
+    replies: []
   }
+
   if (!Array.isArray(target.replies)) {
     target.replies = []
   }
@@ -246,75 +276,100 @@ const submitReply = id => {
   ElMessage.success('回复成功')
 }
 
-const onAddReply = (targetId, content) => {
-  const target = findNodeById(messages.value, targetId)
-  if (!target) {
-    return
-  }
-  const newReply = {
-    id: Date.now(),
-    nickname: '我',
-    avatar: '',
-    content,
-    createdAt: new Date().toLocaleString(),
-    replies: [],
-    likes: 0,
-    liked: false
-  }
-  if (!Array.isArray(target.replies)) {
-    target.replies = []
-  }
-  target.replies.unshift(newReply)
-}
-
-const findNodeById = (list, id) => {
-  for (const item of list) {
-    if (item.id === id) {
-      return item
-    }
-    if (Array.isArray(item.replies) && item.replies.length) {
-      const found = findNodeById(item.replies, id)
-      if (found) {
-        return found
-      }
-    }
-  }
-  return null
-}
-
+// 切换回复展开状态
 const toggleRepliesExpand = id => {
   repliesExpanded[id] = !repliesExpanded[id]
 }
 
-const getVisibleReplies = item => {
-  if (!Array.isArray(item.replies)) {
+// 获取显示的回复列表
+const getDisplayReplies = item => {
+  if (!item.replies || !item.replies.length) {
     return []
   }
-  if (repliesExpanded[item.id]) {
+
+  if (repliesExpanded[item.id] || item.replies.length <= maxCollapsedReplies) {
     return item.replies
   }
+
   return item.replies.slice(0, maxCollapsedReplies)
 }
 
-const toggleLikeMessage = id => {
-  const target = messages.value.find(m => m.id === id)
-  if (!target) {
-    return
-  }
-  target.liked = !target.liked
-  if (typeof target.likes !== 'number') {
-    target.likes = 0
-  }
-  target.likes += target.liked ? 1 : -1
-  if (target.likes < 0) {
-    target.likes = 0
-  }
-}
-
+// 获取更多回复的标签
 const getMoreLabel = item => {
   return repliesExpanded[item.id] ? '收起' : `展开更多 ${item.replies.length - maxCollapsedReplies} 条`
 }
 
+// 切换点赞状态
+const toggleLike = id => {
+  const item = messages.value.find(m => m.id === id)
+  if (item) {
+    item.liked = !item.liked
+    item.likes = item.liked ? (item.likes || 0) + 1 : Math.max(0, (item.likes || 0) - 1)
+  }
+}
+
+// 切换回复点赞状态
+const toggleLikeReply = (messageId, replyId) => {
+  const message = messages.value.find(m => m.id === messageId)
+  if (message && message.replies) {
+    const reply = message.replies.find(r => r.id === replyId)
+    if (reply) {
+      reply.liked = !reply.liked
+      reply.likes = reply.liked ? (reply.likes || 0) + 1 : Math.max(0, (reply.likes || 0) - 1)
+    }
+  }
+}
+
+// 切换回复到回复输入框
+const toggleReplyToReply = (messageId, replyId) => {
+  replyingToReply[`${messageId}-${replyId}`] = !replyingToReply[`${messageId}-${replyId}`]
+  if (replyingToReply[`${messageId}-${replyId}`] && !replyToReplyContent[`${messageId}-${replyId}`]) {
+    replyToReplyContent[`${messageId}-${replyId}`] = ''
+  }
+}
+
+// 插入表情到回复的回复
+const insertReplyToReplyEmoji = (messageId, replyId, e) => {
+  replyToReplyContent[`${messageId}-${replyId}`] = (replyToReplyContent[`${messageId}-${replyId}`] || '') + e
+}
+
+// 提交回复的回复
+const submitReplyToReply = (messageId, replyId) => {
+  const content = (replyToReplyContent[`${messageId}-${replyId}`] || '').trim()
+  if (!content) {
+    ElMessage.warning('请输入回复内容')
+    return
+  }
+
+  const message = messages.value.find(m => m.id === messageId)
+  if (!message) {
+    return
+  }
+
+  const reply = message.replies.find(r => r.id === replyId)
+  if (!reply) {
+    return
+  }
+
+  const newReply = {
+    id: Date.now(),
+    nickname: '我',
+    content,
+    createdAt: new Date().toLocaleString(),
+    likes: 0,
+    liked: false
+  }
+
+  if (!Array.isArray(reply.replies)) {
+    reply.replies = []
+  }
+  reply.replies.unshift(newReply)
+  replyToReplyContent[`${messageId}-${replyId}`] = ''
+  replyingToReply[`${messageId}-${replyId}`] = false
+  ElMessage.success('回复成功')
+}
+
+// 提交留言
 const handleSubmit = async () => {
   submitting.value = true
   try {
@@ -325,8 +380,10 @@ const handleSubmit = async () => {
       content: form.content,
       createdAt: new Date().toLocaleString(),
       location: '四川 成都',
+      avatar: '',
       likes: 0,
-      liked: false
+      liked: false,
+      replies: []
     }
     messages.value.unshift(newItem)
     ElMessage.success('留言成功')
@@ -338,6 +395,7 @@ const handleSubmit = async () => {
   }
 }
 
+// 重置表单
 const handleReset = () => {
   form.nickname = ''
   form.email = ''

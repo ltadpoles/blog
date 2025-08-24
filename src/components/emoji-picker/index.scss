@@ -1,52 +1,55 @@
-.emoji-container {
-  overflow: hidden;
-}
-
-.emoji-box {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 10px;
-  padding: 12px;
-  max-height: 280px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  box-sizing: border-box;
-
-  &::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+// Emoji选择器样式
+.emoji {
+  &-container {
+    overflow: hidden;
   }
 
-  &::-webkit-scrollbar-thumb {
-    background: #e0e0e0;
-    border-radius: 4px;
+  &-box {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 10px;
+    padding: 12px;
+    max-height: 280px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #e0e0e0;
+      border-radius: 4px;
+
+      &:hover {
+        background: #d0d0d0;
+      }
+    }
   }
 
-  &::-webkit-scrollbar-thumb:hover {
-    background: #d0d0d0;
-  }
-}
+  &-item {
+    font-size: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
 
-.emoji-item {
-  font-size: 20px; /* 增大表情大小 */
-  background: none;
-  border: none;
-  cursor: pointer;
-  border-radius: 50%; /* 圆形设计 */
-  width: 26px;
-  height: 26px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
+    &:hover {
+      transform: scale(1.25);
+      z-index: 1;
+    }
 
-  &:hover {
-    transform: scale(1.25); /* 悬停放大 */
-    z-index: 1;
-  }
-
-  &:active {
-    transform: scale(1.15);
+    &:active {
+      transform: scale(1.15);
+    }
   }
 }
