@@ -22,13 +22,13 @@
         </div>
         <el-divider />
 
-        <ul class="message-list">
-          <li class="message-item" v-for="item in messages" :key="item.id">
-            <div class="message-item-inner">
-              <el-avatar class="message-avatar" :src="item.avatar || defaultAvatar" :size="40" />
-              <div class="message-body">
-                <header class="message-header">
-                  <h4 class="message-nickname">
+        <ul class="board-list">
+          <li class="board-item" v-for="item in messages" :key="item.id">
+            <div class="board-item-inner">
+              <el-avatar class="board-avatar" :src="item.avatar || defaultAvatar" :size="40" />
+              <div class="board-body">
+                <header class="board-header">
+                  <h4 class="board-nickname">
                     <a v-if="item.website" :href="formatWebsite(item.website)" target="_blank" rel="noopener">
                       {{ item.nickname }}
                     </a>
@@ -36,16 +36,16 @@
                       {{ item.nickname }}
                     </span>
                   </h4>
-                  <div class="message-meta">
-                    <time class="message-time" :datetime="item.createdAt">{{ item.createdAt }}</time>
-                    <span v-if="item.location" class="message-dot">·</span>
-                    <span v-if="item.location" class="message-location">{{ item.location }}</span>
+                  <div class="board-meta">
+                    <time class="board-time" :datetime="item.createdAt">{{ item.createdAt }}</time>
+                    <span v-if="item.location" class="board-dot">·</span>
+                    <span v-if="item.location" class="board-location">{{ item.location }}</span>
                   </div>
                 </header>
 
-                <p class="message-content">{{ item.content }}</p>
+                <p class="board-content">{{ item.content }}</p>
 
-                <div class="message-actions">
+                <div class="board-actions">
                   <el-button
                     link
                     :type="item.liked ? 'primary' : 'default'"

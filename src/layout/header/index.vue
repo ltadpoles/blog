@@ -72,7 +72,7 @@ const menuList = [
   { path: '/', name: '首页', icon: 'home' },
   { path: '/archive', name: '归档', icon: 'archive' },
   { path: '/about', name: '关于', icon: 'about' },
-  { path: '/message', name: '留言板', icon: 'component' }
+  { path: '/board', name: '留言板', icon: 'board' }
 ]
 const activeIndex = ref(0)
 

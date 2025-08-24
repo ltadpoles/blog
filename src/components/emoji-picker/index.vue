@@ -1,7 +1,7 @@
 <template>
   <el-popover placement="bottom" width="380" trigger="click" popper-class="emoji-popper">
     <template #reference>
-      <el-button link type="primary">😀</el-button>
+      <SvgIcon name="emote" width="1.2rem" height="1.2rem" />
     </template>
     <div class="emoji-container">
       <div class="emoji-box">

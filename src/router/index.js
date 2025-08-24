@@ -38,9 +38,9 @@ export const routes = [
         component: () => import('@/views/article/tag/index.vue')
       },
       {
-        path: 'message',
-        name: 'Message',
-        component: () => import('@/views/message/index.vue')
+        path: 'board',
+        name: 'Board',
+        component: () => import('@/views/board/index.vue')
       }
     ]
   }
