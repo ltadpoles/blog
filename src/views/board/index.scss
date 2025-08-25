@@ -1,11 +1,5 @@
 // 留言板样式
 .board {
-  &-flex {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-  }
-
   &-list {
     list-style: none;
     margin: 0;
@@ -125,14 +119,6 @@
   &-box {
     position: relative;
     margin-top: 10px;
-
-    .el-textarea__inner {
-      padding-right: 48px;
-    }
-
-    .el-input__count {
-      right: 32px;
-    }
   }
 
   &-actions {

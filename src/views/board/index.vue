@@ -1,7 +1,6 @@
 <template>
   <div class="view">
     <div class="view-content">
-      <!-- 留言表单卡片 -->
       <div class="card">
         <div class="card-header">
           <div class="card-header-left">
@@ -10,10 +9,9 @@
           </div>
         </div>
         <el-divider />
-        <comment-form v-model="form" :loading="submitting" @submit="handleSubmit" @reset="handleReset" />
+        <comment-form />
       </div>
 
-      <!-- 留言列表卡片 -->
       <div class="card">
         <div class="card-header">
           <div class="card-header-left">
@@ -28,7 +26,6 @@
             <div class="board-item-inner">
               <el-avatar class="board-avatar" :src="item.avatar || defaultAvatar" :size="32" />
               <div class="board-body">
-                <!-- 留言头部信息 -->
                 <div class="board-header">
                   <h4 class="board-nickname">
                     <a v-if="item.website" @click="formatWebsite(item.website)" class="nickname-link">
@@ -61,20 +58,9 @@
                   </div>
                 </div>
 
-                <!-- 回复输入框 -->
-                <div v-if="replying[item.id]" class="reply-box">
-                  <el-input
-                    v-model="replyContent[item.id]"
-                    type="textarea"
-                    :rows="3"
-                    maxlength="500"
-                    show-word-limit
-                    placeholder="回复内容"
-                  />
-                  <emoji-picker @select="e => insertReplyEmoji(item.id, e)" />
-                  <div class="reply-actions">
-                    <el-button size="small" type="primary" @click="submitReply(item.id)">提交回复</el-button>
-                  </div>
+                <!-- 回复输入框组件 -->
+                <div class="reply-box">
+                  <comment-form :rows="2" v-if="replying[item.id]" />
                 </div>
 
                 <!-- 回复列表 -->
@@ -110,22 +96,8 @@
                         </div>
                       </div>
 
-                      <!-- 回复的回复输入框 -->
-                      <div v-if="replyingToReply[`${item.id}-${reply.id}`]" class="reply-box">
-                        <el-input
-                          v-model="replyToReplyContent[`${item.id}-${reply.id}`]"
-                          type="textarea"
-                          :rows="3"
-                          maxlength="500"
-                          show-word-limit
-                          placeholder="回复内容"
-                        />
-                        <emoji-picker @select="e => insertReplyToReplyEmoji(item.id, reply.id, e)" />
-                        <div class="reply-actions">
-                          <el-button size="small" type="primary" @click="submitReplyToReply(item.id, reply.id)">
-                            提交回复
-                          </el-button>
-                        </div>
+                      <div class="reply-box">
+                        <comment-form :rows="2" v-if="replyingToReply[`${item.id}-${reply.id}`]" />
                       </div>
                     </div>
                   </div>
@@ -148,19 +120,8 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
-import { ElMessage } from 'element-plus'
 import defaultAvatar from '@/assets/images/avatar.jpg'
 import CommentForm from '@/components/comment-form/index.vue'
-import EmojiPicker from '@/components/emoji-picker/index.vue'
-
-const submitting = ref(false)
-
-const form = reactive({
-  nickname: '',
-  email: '',
-  website: '',
-  content: ''
-})
 
 // 模拟留言数据
 const messages = ref([
@@ -217,7 +178,7 @@ const messages = ref([
 const replying = reactive({})
 const replyContent = reactive({})
 const repliesExpanded = reactive({})
-const maxCollapsedReplies = 3
+const maxCollapsedReplies = 2
 
 // 回复的回复状态
 const replyingToReply = reactive({})
@@ -237,43 +198,6 @@ const toggleReply = id => {
   if (replying[id] && !replyContent[id]) {
     replyContent[id] = ''
   }
-}
-
-// 插入表情到回复
-const insertReplyEmoji = (id, e) => {
-  replyContent[id] = (replyContent[id] || '') + e
-}
-
-// 提交回复
-const submitReply = id => {
-  const content = (replyContent[id] || '').trim()
-  if (!content) {
-    ElMessage.warning('请输入回复内容')
-    return
-  }
-
-  const target = messages.value.find(m => m.id === id)
-  if (!target) {
-    return
-  }
-
-  const newReply = {
-    id: Date.now(),
-    nickname: '我',
-    content,
-    createdAt: new Date().toLocaleString(),
-    likes: 0,
-    liked: false,
-    replies: []
-  }
-
-  if (!Array.isArray(target.replies)) {
-    target.replies = []
-  }
-  target.replies.unshift(newReply)
-  replyContent[id] = ''
-  replying[id] = false
-  ElMessage.success('回复成功')
 }
 
 // 切换回复展开状态
@@ -326,81 +250,6 @@ const toggleReplyToReply = (messageId, replyId) => {
   if (replyingToReply[`${messageId}-${replyId}`] && !replyToReplyContent[`${messageId}-${replyId}`]) {
     replyToReplyContent[`${messageId}-${replyId}`] = ''
   }
-}
-
-// 插入表情到回复的回复
-const insertReplyToReplyEmoji = (messageId, replyId, e) => {
-  replyToReplyContent[`${messageId}-${replyId}`] = (replyToReplyContent[`${messageId}-${replyId}`] || '') + e
-}
-
-// 提交回复的回复
-const submitReplyToReply = (messageId, replyId) => {
-  const content = (replyToReplyContent[`${messageId}-${replyId}`] || '').trim()
-  if (!content) {
-    ElMessage.warning('请输入回复内容')
-    return
-  }
-
-  const message = messages.value.find(m => m.id === messageId)
-  if (!message) {
-    return
-  }
-
-  const reply = message.replies.find(r => r.id === replyId)
-  if (!reply) {
-    return
-  }
-
-  const newReply = {
-    id: Date.now(),
-    nickname: '我',
-    content,
-    createdAt: new Date().toLocaleString(),
-    likes: 0,
-    liked: false
-  }
-
-  if (!Array.isArray(reply.replies)) {
-    reply.replies = []
-  }
-  reply.replies.unshift(newReply)
-  replyToReplyContent[`${messageId}-${replyId}`] = ''
-  replyingToReply[`${messageId}-${replyId}`] = false
-  ElMessage.success('回复成功')
-}
-
-// 提交留言
-const handleSubmit = async () => {
-  submitting.value = true
-  try {
-    const newItem = {
-      id: Date.now(),
-      nickname: form.nickname,
-      website: form.website,
-      content: form.content,
-      createdAt: new Date().toLocaleString(),
-      location: '四川 成都',
-      avatar: '',
-      likes: 0,
-      liked: false,
-      replies: []
-    }
-    messages.value.unshift(newItem)
-    ElMessage.success('留言成功')
-    handleReset()
-  } catch {
-    ElMessage.error('提交失败')
-  } finally {
-    submitting.value = false
-  }
-}
-
-// 重置表单
-const handleReset = () => {
-  form.nickname = ''
-  form.email = ''
-  form.website = ''
-  form.content = ''
 }
 </script>
 

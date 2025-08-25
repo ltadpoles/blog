@@ -1,4 +1,3 @@
-// 评论表单样式
 .form {
   &-row {
     display: flex;
@@ -14,15 +13,31 @@
 .content-field {
   position: relative;
 
-  .emoji-wrapper {
+  .form-wrapper {
+    display: flex;
     position: absolute;
-    bottom: -4px;
-    left: 10px;
-    z-index: 1;
+    bottom: 1px;
+    margin: 0 10px;
+    width: calc(100% - 20px);
+    background: var(--el-bg-color);
+    align-items: center;
+    justify-content: space-between;
+    height: 48px;
+
+    .form-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      >span {
+        font-size: 0.85rem;
+        color: var(--el-text-color-regular);
+      }
+    }
   }
 
   .el-textarea__inner {
-    padding-bottom: 32px;
+    padding-bottom: 48px;
   }
 
   .el-input__count {

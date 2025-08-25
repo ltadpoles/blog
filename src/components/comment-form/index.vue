@@ -18,64 +18,37 @@
       <el-input
         v-model="localForm.content"
         type="textarea"
-        :rows="5"
+        :rows="rows"
         resize="none"
         maxlength="500"
-        show-word-limit
         placeholder="留言内容（必填，支持 Emoji）"
       />
-      <div class="emoji-wrapper">
-        <emoji-picker :emoji-list="emojiList" @select="appendEmoji" />
+      <div class="form-wrapper">
+        <emoji-picker @select="appendEmoji" />
+        <div class="form-btn">
+          <span>{{ localForm.content.length }} / 500</span>
+          <el-button type="primary" :loading="loading" @click="onSubmit" :disabled="!localForm.content">提交</el-button>
+        </div>
       </div>
-    </el-form-item>
-
-    <el-form-item>
-      <el-button type="primary" :loading="loading" @click="onSubmit">提交</el-button>
-      <el-button @click="onReset">重置</el-button>
     </el-form-item>
   </el-form>
 </template>
 
 <script setup>
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive } from 'vue'
 import EmojiPicker from '@/components/emoji-picker/index.vue'
 
-const props = defineProps({
-  modelValue: {
-    type: Object,
-    default: () => ({ nickname: '', email: '', website: '', content: '' })
-  },
-  loading: { type: Boolean, default: false },
-  emojiList: { type: Array, default: null }
+defineProps({
+  rows: { type: Number, default: 5 },
+  loading: { type: Boolean, default: false }
 })
-
-const emit = defineEmits(['update:modelValue', 'submit', 'reset'])
 
 const formRef = ref(null)
 const localForm = reactive({ nickname: '', email: '', website: '', content: '' })
 
-watch(
-  () => props.modelValue,
-  val => {
-    Object.assign(localForm, val || { nickname: '', email: '', website: '', content: '' })
-  },
-  { immediate: true, deep: true }
-)
-
-watch(
-  localForm,
-  val => {
-    emit('update:modelValue', { ...val })
-  },
-  { deep: true }
-)
-
 const validateContent = (rule, value, callback) => {
   if (!value || !String(value).trim()) {
     return callback(new Error('请输入留言内容'))
-  }
-  if (String(value).length < 2) {
-    return callback(new Error('留言内容至少 2 个字符'))
   }
   callback()
 }
@@ -100,7 +73,7 @@ const rules = {
       trigger: 'blur'
     }
   ],
-  content: [{ required: true, validator: validateContent, trigger: 'change' }]
+  content: [{ required: true, validator: validateContent, trigger: 'blur' }]
 }
 
 const appendEmoji = e => {
@@ -112,14 +85,13 @@ const onSubmit = () => {
     if (!valid) {
       return
     }
-    emit('submit', { ...localForm })
+    reset()
   })
 }
 
-const onReset = () => {
+const reset = () => {
   Object.assign(localForm, { nickname: '', email: '', website: '', content: '' })
   formRef.value?.clearValidate()
-  emit('reset')
 }
 </script>
 

@@ -14,9 +14,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-
-const groups = [
+const groupedEmojis = [
   // 表情
   '😄',
   '😁',
@@ -42,7 +40,6 @@ const groups = [
   '😤',
   '😢',
   '😭',
-  '🥲',
   '😟',
   '😣',
   '🤧',
@@ -95,8 +92,6 @@ const groups = [
   '🖤',
   '💔'
 ]
-
-const groupedEmojis = computed(() => groups)
 </script>
 
 <style lang="scss" scoped>
