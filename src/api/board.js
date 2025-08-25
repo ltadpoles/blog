@@ -1,11 +1,11 @@
 import http from '@/utils/http'
 
 // 提交留言
-export const addMessage = data => {
-  return http.post('/message/add', data)
+export const addBoard = data => {
+  return http.post('/board/add', data)
 }
 
-// （可选）获取留言列表
-export const getMessageList = params => {
-  return http.get('/message/list', { params })
+// 获取留言列表
+export const getBoardList = params => {
+  return http.get('/board/list', { params })
 }

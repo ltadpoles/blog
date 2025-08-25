@@ -33,12 +33,12 @@
     font-size: 1.1rem;
   }
 
-  &-nickname {
+  &-name {
     margin: 0;
     font-weight: 600;
     line-height: 1.3;
 
-    .nickname-link {
+    .name-link {
       color: var(--el-color-primary);
       text-decoration: none;
       cursor: pointer;
@@ -161,7 +161,7 @@
     font-size: 0.9rem;
   }
 
-  &-nickname {
+  &-name {
     font-weight: 600;
     color: var(--el-color-primary);
   }

@@ -1,8 +1,8 @@
 <template>
   <el-form ref="formRef" :model="localForm" :rules="rules" label-width="0">
     <div class="form-row">
-      <el-form-item prop="nickname" class="form-col">
-        <el-input v-model="localForm.nickname" placeholder="昵称（必填）" maxlength="30" show-word-limit />
+      <el-form-item prop="name" class="form-col">
+        <el-input v-model="localForm.name" placeholder="昵称（必填）" maxlength="30" show-word-limit />
       </el-form-item>
 
       <el-form-item prop="email" class="form-col">
@@ -37,6 +37,7 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import EmojiPicker from '@/components/emoji-picker/index.vue'
+import { addBoard } from '@/api/board'
 
 defineProps({
   rows: { type: Number, default: 5 },
@@ -44,7 +45,7 @@ defineProps({
 })
 
 const formRef = ref(null)
-const localForm = reactive({ nickname: '', email: '', website: '', content: '' })
+const localForm = reactive({ name: '', email: '', website: '', content: '' })
 
 const validateContent = (rule, value, callback) => {
   if (!value || !String(value).trim()) {
@@ -54,7 +55,7 @@ const validateContent = (rule, value, callback) => {
 }
 
 const rules = {
-  nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
+  name: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
   email: [{ type: 'email', message: '邮箱格式不正确', trigger: 'blur' }],
   website: [
     {
@@ -81,16 +82,18 @@ const appendEmoji = e => {
 }
 
 const onSubmit = () => {
-  formRef.value?.validate(valid => {
+  formRef.value?.validate(async valid => {
     if (!valid) {
       return
     }
+    await addBoard({ ...localForm })
+
     reset()
   })
 }
 
 const reset = () => {
-  Object.assign(localForm, { nickname: '', email: '', website: '', content: '' })
+  Object.assign(localForm, { name: '', email: '', website: '', content: '' })
   formRef.value?.clearValidate()
 }
 </script>

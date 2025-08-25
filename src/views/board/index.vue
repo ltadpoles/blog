@@ -27,11 +27,11 @@
               <el-avatar class="board-avatar" :src="item.avatar || defaultAvatar" :size="32" />
               <div class="board-body">
                 <div class="board-header">
-                  <h4 class="board-nickname">
-                    <a v-if="item.website" @click="formatWebsite(item.website)" class="nickname-link">
-                      {{ item.nickname }}
+                  <h4 class="board-name">
+                    <a v-if="item.website" @click="formatWebsite(item.website)" class="name-link">
+                      {{ item.name }}
                     </a>
-                    <span v-else>{{ item.nickname }}</span>
+                    <span v-else>{{ item.name }}</span>
                   </h4>
                   <div class="board-meta">
                     <span v-if="item.location" class="board-location">{{ item.location }}</span>
@@ -69,8 +69,8 @@
                     <el-avatar class="reply-avatar" :src="reply.avatar || defaultAvatar" :size="24" />
                     <div class="reply-content-wrapper">
                       <div class="reply-header">
-                        <span class="reply-nickname">{{ reply.nickname }}</span>
-                        <span class="reply-reply-to">回复 {{ item.nickname }}</span>
+                        <span class="reply-name">{{ reply.name }}</span>
+                        <span class="reply-reply-to">回复 {{ item.name }}</span>
                         <span class="reply-time">{{ reply.createdAt }}</span>
                       </div>
                       <div class="reply-content">{{ reply.content }}</div>
@@ -123,56 +123,8 @@ import { ref, reactive } from 'vue'
 import defaultAvatar from '@/assets/images/avatar.jpg'
 import CommentForm from '@/components/comment-form/index.vue'
 
-// 模拟留言数据
-const messages = ref([
-  {
-    id: 1,
-    nickname: '小明',
-    website: 'https://example.com',
-    content: '博客很棒！🚀',
-    createdAt: '2024-10-01 12:30',
-    location: '四川 成都',
-    avatar: '',
-    likes: 2,
-    liked: false,
-    replies: [
-      {
-        id: 11,
-        nickname: '作者',
-        content: '谢谢支持！😊',
-        createdAt: '2024-10-01 13:00',
-        location: '四川 成都',
-        avatar: '',
-        likes: 1,
-        liked: false,
-        replies: []
-      },
-      {
-        id: 12,
-        nickname: '游荡de蝌蚪',
-        content: '这个就是厉害的',
-        createdAt: '2024-10-01 14:00',
-        location: '北京',
-        avatar: '',
-        likes: 0,
-        liked: false,
-        replies: []
-      }
-    ]
-  },
-  {
-    id: 2,
-    nickname: 'Alice',
-    website: '',
-    content: '学到了很多，感谢分享！🎉',
-    createdAt: '2024-10-02 09:20',
-    location: '北京',
-    avatar: '',
-    likes: 0,
-    liked: false,
-    replies: []
-  }
-])
+// 留言数据
+const messages = ref([])
 
 // 响应式状态
 const replying = reactive({})
