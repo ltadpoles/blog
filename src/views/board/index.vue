@@ -17,6 +17,7 @@
           <div class="card-header-left">
             <SvgIcon name="more" />
             <span>留言列表</span>
+            <span class="message-count">（共 {{ pagination.total }} 条）</span>
           </div>
         </div>
         <el-divider />
@@ -72,6 +73,7 @@
                     "
                     :rows="2"
                     :parentId="item.id"
+                    :replyToUserName="item.user?.name"
                     v-if="replying[item.id]"
                     @submit="onReplySubmit"
                   />
@@ -89,8 +91,7 @@
                     <div class="reply-content-wrapper">
                       <div class="reply-header">
                         <span class="reply-name">{{ reply.user?.name }}</span>
-                        <span class="reply-reply-to">回复 {{ item.user?.name }}</span>
-                        <!-- <span class="reply-time">{{ dayjs(reply.createTime).format('YYYY-MM-DD HH:mm:ss') }}</span> -->
+                        <span class="reply-reply-to">回复 {{ reply.replyToUserName }}</span>
                       </div>
                       <div class="reply-content">{{ reply.content }}</div>
 
@@ -126,6 +127,7 @@
                           "
                           :rows="2"
                           :parentId="item.id"
+                          :replyToUserName="reply.user?.name"
                           v-if="replyingToReply[`${item.id}-${reply.id}`]"
                           @submit="onReplySubmit"
                         />
@@ -272,16 +274,18 @@ const closeAllReplyBoxes = () => {
 }
 
 // 回复提交处理
-const onReplySubmit = async id => {
+const onReplySubmit = async parentId => {
   try {
     // 关闭所有回复框
     closeAllReplyBoxes()
 
-    // 刷新本条留言的回复列表
-    let { data } = await getBoardList({ parentId: id })
-    const item = messages.value.find(m => m.id === id)
-    if (item) {
-      item.list = Object.assign([], data.data.list)
+    // 刷新主留言的回复列表
+    let { data } = await getBoardList({ parentId: parentId })
+
+    // 找到对应的主留言并更新其回复列表
+    const mainMessage = messages.value.find(m => m.id === parentId)
+    if (mainMessage) {
+      mainMessage.list = Object.assign([], data.data.list)
     }
   } catch {
     // 获取回复列表失败

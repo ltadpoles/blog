@@ -22,7 +22,7 @@
         :rows="rows"
         resize="none"
         maxlength="500"
-        placeholder="留言内容（必填，支持 Emoji）"
+        :placeholder="getPlaceholder()"
       />
       <div class="form-wrapper">
         <emoji-picker @select="appendEmoji" />
@@ -47,7 +47,8 @@ const userStore = useUserStore()
 const props = defineProps({
   parentId: { type: Number, default: 0 },
   rows: { type: Number, default: 5 },
-  loading: { type: Boolean, default: false }
+  loading: { type: Boolean, default: false },
+  replyToUserName: { type: String, default: '' }
 })
 
 const formRef = ref(null)
@@ -88,12 +89,24 @@ const appendEmoji = e => {
   localForm.content += e
 }
 
+const getPlaceholder = () => {
+  if (props.replyToUserName) {
+    return `回复 ${props.replyToUserName}...`
+  }
+  return '留言内容（必填，支持 Emoji）'
+}
+
 const onSubmit = () => {
   formRef.value?.validate(async valid => {
     if (!valid) {
       return
     }
-    let { data } = await addBoard({ ...userStore.message, ...localForm, parentId: props.parentId })
+    let { data } = await addBoard({
+      ...userStore.message,
+      ...localForm,
+      parentId: props.parentId,
+      replyToUserName: props.replyToUserName
+    })
 
     userStore.setMessage({
       ...data.data,
