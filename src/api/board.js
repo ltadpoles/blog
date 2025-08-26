@@ -6,6 +6,11 @@ export const addBoard = data => {
 }
 
 // 获取留言列表
+export const getBoardPage = data => {
+  return http.post('/board/page', data)
+}
+
+// 获取留言子列表
 export const getBoardList = params => {
   return http.get('/board/list', { params })
 }

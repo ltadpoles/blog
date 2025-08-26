@@ -8,6 +8,10 @@
   margin: 14px 0;
 }
 
+.el-notification {
+  z-index: 1000000 !important;
+}
+
 /* 统一组件与表单的 font-family */
 body,
 .el-button,

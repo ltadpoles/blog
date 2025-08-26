@@ -16,6 +16,7 @@
 
     <el-form-item prop="content" class="content-field">
       <el-input
+        ref="textareaRef"
         v-model="localForm.content"
         type="textarea"
         :rows="rows"
@@ -35,16 +36,22 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted, nextTick } from 'vue'
 import EmojiPicker from '@/components/emoji-picker/index.vue'
 import { addBoard } from '@/api/board'
+import { useUserStore } from '@/stores/modules/user'
+import { ElNotification } from 'element-plus'
 
-defineProps({
+const userStore = useUserStore()
+
+const props = defineProps({
+  parentId: { type: Number, default: 0 },
   rows: { type: Number, default: 5 },
   loading: { type: Boolean, default: false }
 })
 
 const formRef = ref(null)
+const textareaRef = ref(null)
 const localForm = reactive({ name: '', email: '', website: '', content: '' })
 
 const validateContent = (rule, value, callback) => {
@@ -86,16 +93,65 @@ const onSubmit = () => {
     if (!valid) {
       return
     }
-    await addBoard({ ...localForm })
+    let { data } = await addBoard({ ...userStore.message, ...localForm, parentId: props.parentId })
 
+    userStore.setMessage({
+      ...data.data,
+      email: localForm.email,
+      name: localForm.name,
+      website: localForm.website
+    })
+
+    // 如果是回复，传递父级ID；如果是主留言，不传递参数
+    if (props.parentId) {
+      emit('submit', props.parentId)
+    } else {
+      emit('submit')
+    }
+
+    ElNotification({
+      message: '留言成功',
+      type: 'success'
+    })
     reset()
   })
 }
 
-const reset = () => {
-  Object.assign(localForm, { name: '', email: '', website: '', content: '' })
-  formRef.value?.clearValidate()
+const emit = defineEmits(['submit'])
+
+// 暴露给父组件的方法
+const focus = () => {
+  nextTick(() => {
+    if (textareaRef.value) {
+      textareaRef.value.focus()
+    }
+  })
 }
+
+const reset = () => {
+  Object.assign(localForm, { ...userStore.message })
+  localForm.content = ''
+}
+
+onMounted(() => {
+  Object.assign(localForm, { ...userStore.message })
+
+  // 如果是回复组件，自动获取焦点
+  if (props.parentId) {
+    nextTick(() => {
+      setTimeout(() => {
+        if (textareaRef.value) {
+          textareaRef.value.focus()
+        }
+      }, 100)
+    })
+  }
+})
+
+// 暴露方法给父组件
+defineExpose({
+  focus
+})
 </script>
 
 <style lang="scss">

@@ -26,6 +26,10 @@
     }
   }
 
+  &-avatar {
+    cursor: pointer;
+  }
+
   &-header {
     display: flex;
     align-items: baseline;
@@ -134,7 +138,6 @@
       display: grid;
       grid-template-columns: 24px 1fr;
       gap: 8px;
-      margin-bottom: 12px;
       padding: 8px 0;
       transition: background-color 0.2s ease;
 
@@ -146,6 +149,7 @@
 
   &-avatar {
     align-self: flex-start;
+    cursor: pointer;
   }
 
   &-content-wrapper {
@@ -184,7 +188,6 @@
 
   &-more {
     margin-top: 8px;
-    text-align: center;
 
     .el-button {
       color: var(--el-text-color-secondary);
@@ -214,6 +217,15 @@
 .placeholder-unify ::placeholder {
   font-size: 0.95rem;
   color: var(--el-text-color-secondary);
+}
+
+// 分页样式
+.pagination-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+  margin-top: 20px;
+  border-top: 1px solid var(--el-border-color-lighter);
 }
 
 // 响应式设计
@@ -247,5 +259,9 @@
       gap: 6px;
       padding: 6px 0;
     }
+  }
+
+  .pagination-wrapper {
+    padding: 15px 0;
   }
 }
