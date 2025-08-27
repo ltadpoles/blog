@@ -37,9 +37,9 @@
                     <span>{{ item.user?.name }}</span>
                   </h4>
                   <div class="board-meta">
-                    <span v-if="item.ipCountry" class="board-location">{{
-                      item.ipCountry + item.ipProvince + item.ipCity
-                    }}</span>
+                    <span v-if="item.ipCountry" class="board-location">
+                      {{ item.ipCountry + item.ipProvince + item.ipCity }}
+                    </span>
                   </div>
                 </div>
 
@@ -49,9 +49,13 @@
                 <!-- 留言操作 -->
                 <div class="board-actions">
                   <span class="board-time">{{ dayjs(item.createTime).format('YYYY-MM-DD HH:mm:ss') }}</span>
-                  <div class="board-action-item" @click="toggleLike(item.id)" :class="{ liked: item.liked }">
-                    <SvgIcon name="like" :class="{ liked: item.liked }" />
-                    <span>{{ item.likes || 0 }}</span>
+                  <div
+                    class="board-action-item"
+                    @click="likeChange(item.id)"
+                    :class="{ liked: isMessageLiked(item.id) }"
+                  >
+                    <SvgIcon name="like" :class="{ liked: isMessageLiked(item.id) }" />
+                    <span>{{ item.likeCount || 0 }}</span>
                   </div>
                   <div
                     class="board-action-item"
@@ -100,10 +104,10 @@
                         <div
                           class="board-action-item"
                           @click="toggleLikeReply(item.id, reply.id)"
-                          :class="{ liked: reply.liked }"
+                          :class="{ liked: isReplyLiked(reply.id) }"
                         >
-                          <SvgIcon name="like" :class="{ liked: reply.liked }" />
-                          <span>{{ reply.likes || 0 }}</span>
+                          <SvgIcon name="like" :class="{ liked: isReplyLiked(reply.id) }" />
+                          <span>{{ reply.likeCount || 0 }}</span>
                         </div>
                         <div
                           class="board-action-item"
@@ -168,6 +172,10 @@ import defaultAvatar from '@/assets/images/avatar.jpg'
 import CommentForm from '@/components/comment-form/index.vue'
 import { getBoardList, getBoardPage } from '@/api/board'
 import { dayjs } from 'element-plus'
+import { likeUserLikes, toggleLike } from '@/api/like'
+import { useUserStore } from '@/stores/modules/user'
+
+const userStore = useUserStore()
 
 // 留言数据
 const messages = ref([])
@@ -181,20 +189,18 @@ const pagination = reactive({
 
 // 响应式状态
 const replying = reactive({})
-const replyContent = reactive({})
 const repliesExpanded = reactive({})
+const replyingToReply = reactive({})
+const replyFormRefs = reactive({})
 const maxCollapsedReplies = 2
 
-// 回复的回复状态
-const replyingToReply = reactive({})
-const replyToReplyContent = reactive({})
+// 用户点赞的实体ID集合
+const userLikedEntities = ref(new Set())
 
-// 回复组件ref
-const replyFormRefs = reactive({})
-
+// 获取留言列表
 const getList = async () => {
   try {
-    let { data } = await getBoardPage({
+    const { data } = await getBoardPage({
       pageNum: pagination.pageNum,
       pageSize: pagination.pageSize
     })
@@ -214,78 +220,45 @@ const formatWebsite = website => {
   window.open(/^https?:\/\//i.test(website) ? website : `https://${website}`, '_blank')
 }
 
+// 关闭所有回复框的通用函数
+const closeAllReplyBoxes = () => {
+  Object.keys(replying).forEach(id => {
+    replying[id] = false
+  })
+
+  Object.keys(replyingToReply).forEach(key => {
+    replyingToReply[key] = false
+  })
+}
+
 // 切换回复输入框
 const toggleReply = id => {
-  // 如果当前回复框已经打开，则关闭它
   if (replying[id]) {
     replying[id] = false
     return
   }
 
-  // 关闭所有其他回复框
-  Object.keys(replying).forEach(key => {
-    replying[key] = false
-  })
-
-  // 关闭所有嵌套回复框
-  Object.keys(replyingToReply).forEach(key => {
-    replyingToReply[key] = false
-  })
-
-  // 打开当前回复框
+  closeAllReplyBoxes()
   replying[id] = true
-
-  if (!replyContent[id]) {
-    replyContent[id] = ''
-  }
-
-  // 自动获取焦点
-  nextTick(() => {
-    if (replyFormRefs[id]) {
-      replyFormRefs[id].focus()
-    } else {
-      setTimeout(() => {
-        if (replyFormRefs[id]) {
-          replyFormRefs[id].focus()
-        }
-      }, 100)
-    }
-  })
+  focusElement(id)
 }
 
 // 主留言提交处理
 const onMainSubmit = async () => {
-  // 刷新留言列表，回到第一页
   pagination.pageNum = 1
   await getList()
-}
-
-// 关闭所有回复框
-const closeAllReplyBoxes = () => {
-  // 关闭所有主回复框
-  Object.keys(replying).forEach(id => {
-    replying[id] = false
-  })
-
-  // 关闭所有嵌套回复框
-  Object.keys(replyingToReply).forEach(key => {
-    replyingToReply[key] = false
-  })
 }
 
 // 回复提交处理
 const onReplySubmit = async parentId => {
   try {
-    // 关闭所有回复框
     closeAllReplyBoxes()
 
-    // 刷新主留言的回复列表
-    let { data } = await getBoardList({ parentId: parentId })
+    const { data } = await getBoardList({ parentId })
 
-    // 找到对应的主留言并更新其回复列表
     const mainMessage = messages.value.find(m => m.id === parentId)
     if (mainMessage) {
-      mainMessage.list = Object.assign([], data.data.list)
+      mainMessage.list = [...data.data.list]
     }
   } catch {
     // 获取回复列表失败
@@ -321,65 +294,87 @@ const getMoreLabel = item => {
   return repliesExpanded[item.id] ? '收起' : `展开更多 ${item.list.length - maxCollapsedReplies} 条`
 }
 
-// 切换点赞状态
-const toggleLike = id => {
-  const item = messages.value.find(m => m.id === id)
-  if (item) {
-    item.liked = !item.liked
-    item.likes = item.liked ? (item.likes || 0) + 1 : Math.max(0, (item.likes || 0) - 1)
+// 切换点赞的通用函数
+const toggleLikeEntity = async (entityId, entityType, isLiked, updateLikeCount) => {
+  try {
+    const { data } = await toggleLike({
+      entityId,
+      entityType,
+      isLike: !isLiked,
+      userId: userStore.message.userId
+    })
+
+    userStore.setMessage({ userId: data.data?.userId })
+
+    // 更新本地点赞状态
+    if (isLiked) {
+      userLikedEntities.value.delete(entityId)
+    } else {
+      userLikedEntities.value.add(entityId)
+    }
+
+    // 更新点赞数量
+    updateLikeCount(!isLiked)
+  } catch {
+    // 切换点赞状态失败
   }
 }
 
-// 切换回复点赞状态
-const toggleLikeReply = (messageId, replyId) => {
-  const message = messages.value.find(m => m.id === messageId)
-  if (message && message.list) {
-    const reply = message.list.find(r => r.id === replyId)
-    if (reply) {
-      reply.liked = !reply.liked
-      reply.likes = reply.liked ? (reply.likes || 0) + 1 : Math.max(0, (reply.likes || 0) - 1)
-    }
+// 切换留言点赞状态
+const likeChange = async id => {
+  const item = messages.value.find(m => m.id === id)
+  if (!item) {
+    return
   }
+
+  const isCurrentlyLiked = isMessageLiked(id)
+
+  await toggleLikeEntity(id, 'board', isCurrentlyLiked, isLiked => {
+    item.likeCount = isLiked ? (item.likeCount || 0) + 1 : Math.max(0, (item.likeCount || 0) - 1)
+  })
+}
+
+// 切换回复点赞状态
+const toggleLikeReply = async (messageId, replyId) => {
+  const message = messages.value.find(m => m.id === messageId)
+  if (!message?.list) {
+    return
+  }
+
+  const reply = message.list.find(r => r.id === replyId)
+  if (!reply) {
+    return
+  }
+
+  const isCurrentlyLiked = isReplyLiked(replyId)
+
+  await toggleLikeEntity(replyId, 'board', isCurrentlyLiked, isLiked => {
+    reply.likeCount = isLiked ? (reply.likeCount || 0) + 1 : Math.max(0, (reply.likeCount || 0) - 1)
+  })
 }
 
 // 切换回复到回复输入框
 const toggleReplyToReply = (messageId, replyId) => {
   const key = `${messageId}-${replyId}`
 
-  // 如果当前嵌套回复框已经打开，则关闭它
   if (replyingToReply[key]) {
     replyingToReply[key] = false
     return
   }
 
-  // 关闭所有主回复框
-  Object.keys(replying).forEach(id => {
-    replying[id] = false
-  })
-
-  // 关闭所有其他嵌套回复框
-  Object.keys(replyingToReply).forEach(otherKey => {
-    replyingToReply[otherKey] = false
-  })
-
-  // 打开当前嵌套回复框
+  closeAllReplyBoxes()
   replyingToReply[key] = true
+  focusElement(key)
+}
 
-  if (!replyToReplyContent[key]) {
-    replyToReplyContent[key] = ''
-  }
-
-  // 自动获取焦点
+// 自动获取焦点的通用函数
+const focusElement = key => {
   nextTick(() => {
-    if (replyFormRefs[key]) {
-      replyFormRefs[key].focus()
-    } else {
-      setTimeout(() => {
-        if (replyFormRefs[key]) {
-          replyFormRefs[key].focus()
-        }
-      }, 100)
-    }
+    setTimeout(() => {
+      if (replyFormRefs[key]) {
+        replyFormRefs[key].focus()
+      }
+    }, 50)
   })
 }
 
@@ -389,15 +384,7 @@ watch(
   (newVal, oldVal) => {
     Object.keys(newVal).forEach(id => {
       if (newVal[id] && !oldVal[id]) {
-        // 回复框刚显示，尝试获取焦点
-        const focusReply = () => {
-          if (replyFormRefs[id]) {
-            replyFormRefs[id].focus()
-          }
-        }
-        nextTick(() => {
-          setTimeout(focusReply, 50)
-        })
+        focusElement(id)
       }
     })
   },
@@ -410,23 +397,39 @@ watch(
   (newVal, oldVal) => {
     Object.keys(newVal).forEach(key => {
       if (newVal[key] && !oldVal[key]) {
-        // 嵌套回复框刚显示，尝试获取焦点
-        const focusNestedReply = () => {
-          if (replyFormRefs[key]) {
-            replyFormRefs[key].focus()
-          }
-        }
-        nextTick(() => {
-          setTimeout(focusNestedReply, 50)
-        })
+        focusElement(key)
       }
     })
   },
   { deep: true }
 )
 
+// 获取用户点赞列表
+const getUserLikedEntities = async () => {
+  try {
+    const { data } = await likeUserLikes({ userId: userStore.message.userId })
+    const boardLikes = data.data?.filter(like => like.entityType === 'board') || []
+    userLikedEntities.value = new Set(boardLikes.map(like => like.entityId))
+  } catch {
+    // 获取用户点赞列表失败
+  }
+}
+
+// 检查留言是否被用户点赞
+const isMessageLiked = messageId => {
+  return userLikedEntities.value.has(messageId)
+}
+
+// 检查回复是否被用户点赞
+const isReplyLiked = replyId => {
+  return userLikedEntities.value.has(replyId)
+}
+
 onMounted(() => {
   getList()
+  if (userStore.message.userId) {
+    getUserLikedEntities()
+  }
 })
 </script>
 
