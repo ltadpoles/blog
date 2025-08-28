@@ -47,7 +47,7 @@
 </template>
 
 <script setup>
-import { reactive, onMounted, onUnmounted } from 'vue'
+import { reactive, onMounted, onUnmounted, nextTick } from 'vue'
 import { MdPreview } from 'md-editor-v3'
 import 'md-editor-v3/lib/preview.css'
 import { useSettingStore } from '@/stores/modules/setting'
@@ -67,7 +67,10 @@ let info = reactive({
 
 const onGetCatalog = list => {
   info.catalogList = list
-  calculateOffsets()
+  // 等待DOM渲染完成后再计算偏移量
+  nextTick(() => {
+    setTimeout(calculateOffsets, 100)
+  })
 }
 
 const calculateOffsets = () => {
@@ -75,19 +78,42 @@ const calculateOffsets = () => {
     return
   }
 
+  let hasValidElements = false
+
   info.catalogList.forEach(item => {
     const el = document.querySelector(`[data-line="${item.line}"]`)
     if (el) {
-      // 关键修复：获取元素相对于文档的绝对位置
-      const rect = el.getBoundingClientRect()
-      item.offsetTop = rect.top + window.scrollY - 64
+      try {
+        // 获取元素相对于文档的绝对位置
+        const rect = el.getBoundingClientRect()
+        item.offsetTop = rect.top + window.scrollY - 64
+        hasValidElements = true
+      } catch {
+        // 计算锚点偏移量失败，设置为null
+        item.offsetTop = null
+      }
+    } else {
+      item.offsetTop = null
     }
   })
 
-  handleScroll()
+  // 只有在有有效元素时才处理滚动
+  if (hasValidElements) {
+    handleScroll()
+  }
 }
 
-const handleScroll = () => {
+const debounce = (func, delay) => {
+  let timer = null
+  return (...args) => {
+    clearTimeout(timer)
+    timer = setTimeout(() => {
+      func.apply(this, args)
+    }, delay)
+  }
+}
+
+const handleScroll = debounce(() => {
   if (info.catalogList.length === 0) {
     return
   }
@@ -112,30 +138,26 @@ const handleScroll = () => {
       info.activeId = null
     }
   }
-}
+}, 16) // 约60fps的防抖
 
 const goToAnchor = line => {
   const el = document.querySelector(`[data-line="${line}"]`)
   if (el) {
-    const headerHeight = 64
-    const rect = el.getBoundingClientRect()
-    const targetPosition = rect.top + window.scrollY - headerHeight
+    try {
+      const headerHeight = 64
+      const rect = el.getBoundingClientRect()
+      const targetPosition = rect.top + window.scrollY - headerHeight
 
-    window.scrollTo({
-      top: targetPosition,
-      behavior: 'smooth'
-    })
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+      })
+    } catch {
+      // 跳转到锚点失败，降级处理：直接跳转到元素位置
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
   }
-}
-
-const debounce = (func, delay) => {
-  let timer = null
-  return (...args) => {
-    clearTimeout(timer)
-    timer = setTimeout(() => {
-      func.apply(this, args)
-    }, delay)
-  }
+  // 未找到锚点元素时静默处理
 }
 
 const handleResize = debounce(() => {
@@ -150,12 +172,13 @@ const getInfo = async () => {
   info = Object.assign(info, data.data)
 }
 
-onMounted(() => {
-  getInfo()
+onMounted(async () => {
+  await getInfo()
   window.addEventListener('scroll', handleScroll)
   window.addEventListener('resize', handleResize)
 
-  setTimeout(calculateOffsets, 300)
+  // 等待文章内容渲染完成后再计算锚点
+  setTimeout(calculateOffsets, 500)
 })
 
 onUnmounted(() => {

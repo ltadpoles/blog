@@ -247,6 +247,10 @@ const toggleReply = id => {
 const onMainSubmit = async () => {
   pagination.pageNum = 1
   await getList()
+
+  // 提交留言后，滚动到留言列表开始位置
+  await nextTick()
+  scrollToMessageList()
 }
 
 // 回复提交处理
@@ -266,9 +270,54 @@ const onReplySubmit = async parentId => {
 }
 
 // 当前页改变
-const handleCurrentChange = current => {
+const handleCurrentChange = async current => {
   pagination.pageNum = current
-  getList()
+  await getList()
+
+  // 页码变化后，滚动到留言列表开始位置
+  await nextTick()
+  scrollToMessageList()
+}
+
+// 滚动到留言列表开始位置
+const scrollToMessageList = () => {
+  try {
+    // 优先查找留言列表容器
+    const messageListElement = document.querySelector('.board-list')
+    if (!messageListElement) {
+      return
+    }
+
+    // 计算留言列表相对于视口的位置
+    const rect = messageListElement.getBoundingClientRect()
+    const headerHeight = 105 //头部高度为105px
+    const offset = 20 // 额外偏移量，让用户看到一些上下文
+
+    // 如果留言列表不在视口顶部，则滚动到合适位置
+    if (rect.top > headerHeight + offset) {
+      const targetPosition = rect.top + window.scrollY - headerHeight - offset
+
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+      })
+    } else {
+      // 如果留言列表已经在视口顶部附近，确保第一个留言可见
+      const firstMessage = messageListElement.querySelector('.board-item')
+      if (firstMessage) {
+        const firstMessageRect = firstMessage.getBoundingClientRect()
+        if (firstMessageRect.top < headerHeight) {
+          const targetPosition = firstMessageRect.top + window.scrollY - headerHeight - offset
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          })
+        }
+      }
+    }
+  } catch {
+    // 滚动失败时静默处理，不影响用户体验
+  }
 }
 
 // 切换回复展开状态

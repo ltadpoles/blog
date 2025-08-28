@@ -234,6 +234,34 @@
   border-top: 1px solid var(--el-border-color-lighter);
 }
 
+// 留言列表滚动优化
+.board-list {
+  scroll-behavior: smooth;
+
+  // 为留言项添加平滑过渡效果
+  .board-item {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+// 分页按钮悬停效果
+.pagination-wrapper {
+  .el-pagination {
+    .el-pager li {
+      transition: all 0.2s ease;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+  }
+}
+
 // 响应式设计
 @media screen and (max-width: 768px) {
   .form-col + .form-col {
