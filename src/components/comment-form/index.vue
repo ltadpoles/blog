@@ -41,6 +41,7 @@ import EmojiPicker from '@/components/emoji-picker/index.vue'
 import { addBoard } from '@/api/board'
 import { useUserStore } from '@/stores/modules/user'
 import { ElNotification } from 'element-plus'
+import { xssUtils } from '@/utils'
 
 const userStore = useUserStore()
 
@@ -59,29 +60,74 @@ const validateContent = (rule, value, callback) => {
   if (!value || !String(value).trim()) {
     return callback(new Error('请输入留言内容'))
   }
+
+  // XSS防护验证
+  const validation = xssUtils.validateInput(value)
+  if (!validation.isValid) {
+    return callback(new Error(validation.message))
+  }
+
   callback()
 }
 
+const validateName = (rule, value, callback) => {
+  if (!value || !String(value).trim()) {
+    return callback(new Error('请输入昵称'))
+  }
+
+  // XSS防护验证
+  const validation = xssUtils.validateInput(value)
+  if (!validation.isValid) {
+    return callback(new Error(validation.message))
+  }
+
+  callback()
+}
+
+const validateEmail = (rule, value, callback) => {
+  if (!value) {
+    return callback()
+  }
+
+  // 邮箱格式验证
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(value)) {
+    return callback(new Error('邮箱格式不正确'))
+  }
+
+  // XSS防护验证
+  const validation = xssUtils.validateInput(value)
+  if (!validation.isValid) {
+    return callback(new Error(validation.message))
+  }
+
+  callback()
+}
+
+const validateWebsite = (rule, value, callback) => {
+  if (!value) {
+    return callback()
+  }
+
+  // XSS防护验证
+  const validation = xssUtils.validateInput(value)
+  if (!validation.isValid) {
+    return callback(new Error(validation.message))
+  }
+
+  try {
+    const withProtocol = /^https?:\/\//i.test(value) ? value : `https://${value}`
+    new URL(withProtocol)
+    callback()
+  } catch {
+    callback(new Error('网址格式不正确'))
+  }
+}
+
 const rules = {
-  name: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
-  email: [{ type: 'email', message: '邮箱格式不正确', trigger: 'blur' }],
-  website: [
-    {
-      validator: (rule, value, callback) => {
-        if (!value) {
-          return callback()
-        }
-        try {
-          const withProtocol = /^https?:\/\//i.test(value) ? value : `https://${value}`
-          new URL(withProtocol)
-          callback()
-        } catch {
-          callback(new Error('网址格式不正确'))
-        }
-      },
-      trigger: 'blur'
-    }
-  ],
+  name: [{ required: true, validator: validateName, trigger: 'blur' }],
+  email: [{ validator: validateEmail, trigger: 'blur' }],
+  website: [{ validator: validateWebsite, trigger: 'blur' }],
   content: [{ required: true, validator: validateContent, trigger: 'blur' }]
 }
 
@@ -101,18 +147,25 @@ const onSubmit = () => {
     if (!valid) {
       return
     }
-    let { data } = await addBoard({
+
+    // 对提交的数据进行XSS防护处理
+    const sanitizedData = {
       ...userStore.message,
-      ...localForm,
+      name: xssUtils.sanitize(localForm.name),
+      email: xssUtils.sanitize(localForm.email),
+      website: xssUtils.sanitize(localForm.website),
+      content: xssUtils.sanitize(localForm.content),
       parentId: props.parentId,
-      replyToUserName: props.replyToUserName
-    })
+      replyToUserName: xssUtils.sanitize(props.replyToUserName)
+    }
+
+    let { data } = await addBoard(sanitizedData)
 
     userStore.setMessage({
       ...data.data,
-      email: localForm.email,
-      name: localForm.name,
-      website: localForm.website
+      email: sanitizedData.email,
+      name: sanitizedData.name,
+      website: sanitizedData.website
     })
 
     // 如果是回复，传递父级ID；如果是主留言，不传递参数
