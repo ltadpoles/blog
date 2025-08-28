@@ -14,8 +14,8 @@
       </div>
       <el-divider />
       <div class="tag-info">
-        <div class="tag-info-left">{{ info.name }}</div>
-        <div class="tag-info-right">{{ info.articleCount }}篇</div>
+        <div class="tag-info-left">{{ currentTag.name }}</div>
+        <div class="tag-info-right">{{ currentTag.articleCount }}篇</div>
       </div>
       <article-list ref="articleRef" />
     </div>
@@ -23,40 +23,104 @@
 </template>
 
 <script setup>
-import { onMounted, ref, reactive } from 'vue'
+import { onMounted, ref, reactive, computed, watch, nextTick } from 'vue'
 import articleList from '@/components/article/index.vue'
 import { useRoute } from 'vue-router'
-import { tagStatistics } from '@/api'
+import { tagStatistics, statistics } from '@/api'
 import { useRouter } from 'vue-router'
 
 const route = useRoute()
 const router = useRouter()
 
-let info = reactive({
+// 当前标签信息
+const currentTag = reactive({
   articleCount: 0,
   name: '',
   id: ''
 })
+
+// 标签列表数据
 const tagList = ref([])
+const loading = ref(false)
+
+// 文章列表引用
+const articleRef = ref(null)
+
+// 计算当前选中的标签
+const selectedTag = computed(() => {
+  if (tagList.value.length === 0) {
+    return null
+  }
+  const tagId = route.params.id
+  return tagList.value.find(item => String(item.id) === tagId) || tagList.value[0]
+})
+
+// 获取标签统计信息
 const getTagStats = async () => {
-  let { data } = await tagStatistics()
-  tagList.value = [{ name: '全部', id: '', articleCount: 0 }, ...data.data]
-  getList(tagList.value.find(item => String(item.id) === route.params.id))
+  try {
+    loading.value = true
+
+    // 并行获取标签统计和总文章数
+    const [tagRes, statsRes] = await Promise.all([tagStatistics(), statistics()])
+
+    // 构建标签列表，包含"全部"选项
+    tagList.value = [
+      {
+        name: '全部',
+        id: '',
+        articleCount: statsRes.data.data?.articles || 0 // 使用总文章数
+      },
+      ...tagRes.data.data
+    ]
+
+    // 初始化当前标签信息
+    const currentTag = selectedTag.value
+    if (currentTag) {
+      updateCurrentTag(currentTag)
+
+      // 等待组件渲染完成后初始化文章列表
+      await nextTick()
+      if (articleRef.value) {
+        articleRef.value.getList({ tags: currentTag.id ? [currentTag.id] : [] })
+      }
+    }
+  } catch {
+    // 获取标签统计失败
+  } finally {
+    loading.value = false
+  }
 }
 
-const articleRef = ref(null)
+// 更新当前标签信息
+const updateCurrentTag = tag => {
+  if (tag) {
+    currentTag.articleCount = tag.articleCount
+    currentTag.name = tag.name
+    currentTag.id = tag.id
+  }
+}
+
+// 点击标签切换
 const getTag = item => {
   router.push('/tag/' + item.id)
-  getList(item)
+  // 只更新标签信息，文章列表的加载由路由监听器处理
+  updateCurrentTag(item)
 }
 
-const getList = item => {
-  articleRef.value.getList({ tags: item.id ? [item.id] : [] }).then(total => {
-    info.articleCount = total
-    info.name = item.name
-    info.id = item.id
-  })
-}
+// 监听路由变化
+watch(
+  () => route.params.id,
+  newId => {
+    const tag = tagList.value.find(item => String(item.id) === newId)
+    if (tag) {
+      updateCurrentTag(tag)
+      if (articleRef.value) {
+        articleRef.value.resetList()
+        articleRef.value.getList({ tags: tag.id ? [tag.id] : [] })
+      }
+    }
+  }
+)
 
 onMounted(() => {
   getTagStats()
