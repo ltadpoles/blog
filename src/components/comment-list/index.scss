@@ -26,6 +26,32 @@
     }
   }
 
+  // 暂无评论样式
+  .no-comments {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+
+    &-content {
+      text-align: center;
+      color: var(--el-text-color-secondary);
+    }
+
+    &-icon {
+      font-size: 48px;
+      color: var(--el-color-info-light-5);
+      margin-bottom: 16px;
+      opacity: 0.6;
+    }
+
+    &-text {
+      font-size: 0.95rem;
+      margin: 0;
+      line-height: 1.5;
+    }
+  }
+
   .comment-avatar {
     cursor: pointer;
   }
@@ -203,9 +229,7 @@
 .pagination-wrapper {
   display: flex;
   justify-content: center;
-  padding: 20px 0;
   margin-top: 20px;
-  border-top: 1px solid var(--el-border-color-lighter);
 }
 
 // 评论列表滚动优化
@@ -214,7 +238,9 @@
 
   // 为评论项添加平滑过渡效果
   .comment-item {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
 
     &:hover {
       transform: translateY(-1px);
@@ -271,4 +297,3 @@
     padding: 15px 0;
   }
 }
-

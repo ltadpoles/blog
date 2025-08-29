@@ -1,7 +1,46 @@
 .footer {
-  height: 60px;
+  height: auto;
+  min-height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-top: 1px solid var(--el-border-color);
+  padding: 20px;
+
+  &-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .copyright {
+    color: var(--el-text-color-regular);
+    font-size: 0.9rem;
+  }
+
+  .icp {
+    a {
+      color: var(--el-text-color-secondary);
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: var(--el-color-primary);
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// 响应式设计
+@media screen and (min-width: 768px) {
+  .footer {
+    &-content {
+      flex-direction: row;
+      gap: 20px;
+    }
+  }
 }

@@ -1,13 +1,9 @@
-
-
 // 留言总数样式
 .message-count {
   color: var(--el-text-color-secondary);
   font-size: 0.9rem;
   font-weight: normal;
 }
-
-
 
 // 表单相关样式
 .form {
@@ -27,8 +23,6 @@
   font-size: 0.95rem;
   color: var(--el-text-color-secondary);
 }
-
-
 
 // 响应式设计
 @media screen and (max-width: 768px) {

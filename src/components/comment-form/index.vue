@@ -39,6 +39,7 @@
 import { ref, reactive, onMounted, nextTick } from 'vue'
 import EmojiPicker from '@/components/emoji-picker/index.vue'
 import { addBoard } from '@/api/board'
+import { addComment } from '@/api/comment'
 import { useUserStore } from '@/stores/modules/user'
 import { ElNotification } from 'element-plus'
 import { xssUtils } from '@/utils'
@@ -49,7 +50,9 @@ const props = defineProps({
   parentId: { type: Number, default: 0 },
   rows: { type: Number, default: 5 },
   loading: { type: Boolean, default: false },
-  replyToUserName: { type: String, default: '' }
+  replyToUserName: { type: String, default: '' },
+  articleId: { type: Number, default: null }, // 文章ID，用于区分留言板和文章评论
+  type: { type: String, default: 'board' } // 类型：'board' 留言板，'comment' 文章评论
 })
 
 const formRef = ref(null)
@@ -139,7 +142,7 @@ const getPlaceholder = () => {
   if (props.replyToUserName) {
     return `回复 ${props.replyToUserName}...`
   }
-  return '留言内容（必填，支持 Emoji）'
+  return props.type === 'comment' ? '说点什么吧...' : '留言内容（必填，支持 Emoji）'
 }
 
 const onSubmit = () => {
@@ -159,7 +162,13 @@ const onSubmit = () => {
       replyToUserName: xssUtils.sanitize(props.replyToUserName)
     }
 
-    let { data } = await addBoard(sanitizedData)
+    // 如果是文章评论，添加文章ID
+    if (props.type === 'comment' && props.articleId) {
+      sanitizedData.articleId = props.articleId
+    }
+
+    // 根据类型调用不同的API
+    let { data } = props.type === 'comment' ? await addComment(sanitizedData) : await addBoard(sanitizedData)
 
     userStore.setMessage({
       ...data.data,
@@ -176,7 +185,7 @@ const onSubmit = () => {
     }
 
     ElNotification({
-      message: '留言成功',
+      message: props.type === 'comment' ? '评论成功' : '留言成功',
       type: 'success'
     })
     reset()

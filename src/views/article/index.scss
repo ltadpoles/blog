@@ -52,3 +52,30 @@
     }
   }
 }
+
+// 评论区域样式
+.article-comments {
+  margin-top: 20px;
+
+  .comment-section,
+  .comment-list-section {
+    .comment-header {
+      margin-bottom: 16px;
+
+      &-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        color: var(--el-text-color-primary);
+        font-size: 1.2rem;
+      }
+    }
+  }
+
+  .comment-count {
+    color: var(--el-text-color-secondary);
+    font-size: 0.9rem;
+    font-weight: normal;
+  }
+}

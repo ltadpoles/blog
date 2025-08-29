@@ -101,39 +101,25 @@ const onLikeChange = () => {
 // 滚动到留言列表开始位置
 const scrollToMessageList = () => {
   try {
-    // 优先查找留言列表容器
-    const messageListElement = document.querySelector('.board-list')
+    // 查找留言列表容器（使用comment-list组件的类名）
+    const messageListElement = document.querySelector('.comment-list')
     if (!messageListElement) {
       return
     }
 
     // 计算留言列表相对于视口的位置
     const rect = messageListElement.getBoundingClientRect()
-    const headerHeight = 105 //头部高度为105px
-    const offset = 20 // 额外偏移量，让用户看到一些上下文
+    const headerHeight = 105 // 头部高度为105px
+    const offset = 20 // 额外偏移量
 
-    // 如果留言列表不在视口顶部，则滚动到合适位置
-    if (rect.top > headerHeight + offset) {
-      const targetPosition = rect.top + window.scrollY - headerHeight - offset
+    // 计算目标滚动位置，确保留言列表在视口顶部可见
+    const targetPosition = rect.top + window.scrollY - headerHeight - offset
 
-      window.scrollTo({
-        top: targetPosition,
-        behavior: 'smooth'
-      })
-    } else {
-      // 如果留言列表已经在视口顶部附近，确保第一个留言可见
-      const firstMessage = messageListElement.querySelector('.board-item')
-      if (firstMessage) {
-        const firstMessageRect = firstMessage.getBoundingClientRect()
-        if (firstMessageRect.top < headerHeight) {
-          const targetPosition = firstMessageRect.top + window.scrollY - headerHeight - offset
-          window.scrollTo({
-            top: targetPosition,
-            behavior: 'smooth'
-          })
-        }
-      }
-    }
+    // 强制滚动到留言列表顶部，不管当前位置
+    window.scrollTo({
+      top: Math.max(0, targetPosition), // 确保不会滚动到负数位置
+      behavior: 'smooth'
+    })
   } catch {
     // 滚动失败时静默处理，不影响用户体验
   }

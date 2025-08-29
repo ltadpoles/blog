@@ -1,6 +1,7 @@
 <template>
   <div class="comment-list">
-    <ul class="comment-list-container">
+    <!-- 评论列表容器 -->
+    <ul class="comment-list-container" v-if="comments && comments.length > 0">
       <li class="comment-item" v-for="item in comments" :key="item.id">
         <div class="comment-item-inner">
           <el-avatar
@@ -52,6 +53,8 @@
                 :rows="2"
                 :parentId="item.id"
                 :replyToUserName="item.user?.name"
+                :type="type"
+                :articleId="articleId"
                 v-if="replying[item.id]"
                 @submit="onReplySubmit"
               />
@@ -103,6 +106,8 @@
                       :rows="2"
                       :parentId="item.id"
                       :replyToUserName="reply.user?.name"
+                      :type="type"
+                      :articleId="articleId"
                       v-if="replyingToReply[`${item.id}-${reply.id}`]"
                       @submit="onReplySubmit"
                     />
@@ -122,8 +127,18 @@
       </li>
     </ul>
 
+    <!-- 暂无评论提示 -->
+    <div v-else class="no-comments">
+      <div class="no-comments-content">
+        <SvgIcon name="message" class="no-comments-icon" />
+        <p class="no-comments-text">
+          {{ type === 'comment' ? '暂无评论，快来发表第一条评论吧~' : '暂无留言，快来发表第一条留言吧~' }}
+        </p>
+      </div>
+    </div>
+
     <!-- 分页组件 -->
-    <div v-if="showPagination" class="pagination-wrapper">
+    <div v-if="showPagination && comments && comments.length > 0" class="pagination-wrapper">
       <el-pagination
         :current-page="pagination.pageNum"
         :page-size="pagination.pageSize"
@@ -141,6 +156,7 @@ import defaultAvatar from '@/assets/images/avatar.jpg'
 import CommentForm from '@/components/comment-form/index.vue'
 import SvgIcon from '@/components/svgIcon/index.vue'
 import { getBoardList } from '@/api/board'
+import { getCommentList } from '@/api/comment'
 import { dayjs } from 'element-plus'
 import { likeUserLikes, toggleLike } from '@/api/like'
 import { useUserStore } from '@/stores/modules/user'
@@ -165,7 +181,9 @@ const props = defineProps({
   maxCollapsedReplies: {
     type: Number,
     default: 2
-  }
+  },
+  type: { type: String, default: 'board' }, // 类型：'board' 留言板，'comment' 文章评论
+  articleId: { type: Number, default: null } // 文章ID
 })
 
 const emit = defineEmits(['current-change', 'reply-submit', 'like-change'])
@@ -217,12 +235,22 @@ const onReplySubmit = async parentId => {
   try {
     closeAllReplyBoxes()
 
-    const { data } = await getBoardList({ parentId })
+    // 稍微延迟后获取最新回复，确保后端数据已更新
+    await new Promise(resolve => setTimeout(resolve, 100))
+
+    // 根据类型调用不同的API
+    const info = { parentId }
+    if (props.type === 'comment' && props.articleId) {
+      info.articleId = props.articleId
+    }
+
+    const { data } = props.type === 'comment' ? await getCommentList(info) : await getBoardList(info)
 
     // 通知父组件更新数据
     emit('reply-submit', { parentId, replies: data.data.list })
   } catch {
-    // 获取回复列表失败
+    // 获取回复列表失败，即使失败也要通知父组件，避免界面卡住
+    emit('reply-submit', { parentId, replies: [] })
   }
 }
 
