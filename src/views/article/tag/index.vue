@@ -28,6 +28,8 @@ import articleList from '@/components/article/index.vue'
 import { useRoute } from 'vue-router'
 import { tagStatistics, statistics } from '@/api'
 import { useRouter } from 'vue-router'
+import { generateTagSeo, generatePageSeo } from '@/config/seo'
+import { useSeoMeta } from '@unhead/vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -97,6 +99,42 @@ const updateCurrentTag = tag => {
     currentTag.articleCount = tag.articleCount
     currentTag.name = tag.name
     currentTag.id = tag.id
+
+    // 更新SEO信息
+    updateSEO(tag)
+  }
+}
+
+// SEO配置（动态更新）
+const updateSEO = tag => {
+  if (tag && tag.id) {
+    // 具体标签页面
+    const seoData = generateTagSeo(tag)
+    useSeoMeta({
+      title: seoData.title,
+      description: seoData.description,
+      keywords: seoData.keywords,
+      ogTitle: seoData.title,
+      ogDescription: seoData.description,
+      ogImage: seoData.image,
+      ogUrl: seoData.url,
+      twitterTitle: seoData.title,
+      twitterDescription: seoData.description
+    })
+  } else {
+    // “全部”标签页面
+    const seoData = generatePageSeo('tag')
+    useSeoMeta({
+      title: seoData.title,
+      description: seoData.description,
+      keywords: seoData.keywords,
+      ogTitle: seoData.title,
+      ogDescription: seoData.description,
+      ogImage: seoData.image,
+      ogUrl: `${seoData.url}/tag`,
+      twitterTitle: seoData.title,
+      twitterDescription: seoData.description
+    })
   }
 }
 

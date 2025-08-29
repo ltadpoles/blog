@@ -30,6 +30,9 @@ importers:
       '@eslint/js':
         specifier: ^9.31.0
         version: 9.32.0
+      '@unhead/vue':
+        specifier: ^2.0.14
+        version: 2.0.14(vue@3.5.18)
       '@vitejs/plugin-vue':
         specifier: ^6.0.1
         version: 6.0.1(vite@7.0.6(@types/node@24.1.0)(sass@1.89.2)(terser@5.43.1))(vue@3.5.18)
@@ -72,12 +75,15 @@ importers:
       vite:
         specifier: ^7.0.6
         version: 7.0.6(@types/node@24.1.0)(sass@1.89.2)(terser@5.43.1)
+      vite-plugin-sitemap:
+        specifier: ^0.8.2
+        version: 0.8.2
       vite-plugin-svg-icons:
         specifier: ^2.0.1
         version: 2.0.1(vite@7.0.6(@types/node@24.1.0)(sass@1.89.2)(terser@5.43.1))
       vite-ssg:
         specifier: ^28.0.0
-        version: 28.0.0(prettier@3.6.2)(unhead@2.0.12)(vite@7.0.6(@types/node@24.1.0)(sass@1.89.2)(terser@5.43.1))(vue-router@4.5.1(vue@3.5.18))(vue@3.5.18)
+        version: 28.0.0(prettier@3.6.2)(unhead@2.0.14)(vite@7.0.6(@types/node@24.1.0)(sass@1.89.2)(terser@5.43.1))(vue-router@4.5.1(vue@3.5.18))(vue@3.5.18)
 
 packages:
 
@@ -761,10 +767,10 @@ packages:
     peerDependencies:
       unhead: 2.0.12
 
-  '@unhead/vue@2.0.12':
-    resolution: {integrity: sha512-WFaiCVbBd39FK6Bx3GQskhgT9s45Vjx6dRQegYheVwU1AnF+FAfJVgWbrl21p6fRJcLAFp0xDz6wE18JYBM0eQ==}
+  '@unhead/vue@2.0.14':
+    resolution: {integrity: sha512-Ym9f+Kd2Afqek2FtUHvYvK+j2uZ2vbZ6Rr9NCnNGGBMdmafAuiZpT117YGyh0ARcueL6Znia0U8ySqPsnHOZIg==}
     peerDependencies:
-      vue: '>=3.5.13'
+      vue: '>=3.5.18'
 
   '@vavt/copy2clipboard@1.0.3':
     resolution: {integrity: sha512-HtG48r2FBYp9eRvGB3QGmtRBH1zzRRAVvFbGgFstOwz4/DDaNiX0uZc3YVKPydqgOav26pibr9MtoCaWxn7aeA==}
@@ -2581,8 +2587,8 @@ packages:
   undici-types@7.8.0:
     resolution: {integrity: sha512-9UJ2xGDvQ43tYyVMpuHlsgApydB8ZKfVYTsLDhXkFL/6gfkp+U8xTGdh8pMJv1SpZna0zxG1DwsKZsreLbXBxw==}
 
-  unhead@2.0.12:
-    resolution: {integrity: sha512-5oo0lwz81XDXCmrHGzgmbaNOxM8R9MZ3FkEs2ROHeW8e16xsrv7qXykENlISrcxr3RLPHQEsD1b6js9P2Oj/Ow==}
+  unhead@2.0.14:
+    resolution: {integrity: sha512-dRP6OCqtShhMVZQe1F4wdt/WsYl2MskxKK+cvfSo0lQnrPJ4oAUQEkxRg7pPP+vJENabhlir31HwAyHUv7wfMg==}
 
   unimport@4.2.0:
     resolution: {integrity: sha512-mYVtA0nmzrysnYnyb3ALMbByJ+Maosee2+WyE0puXl+Xm2bUwPorPaaeZt0ETfuroPOtG8jj1g/qeFZ6buFnag==}
@@ -2650,6 +2656,9 @@ packages:
   vary@1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
+
+  vite-plugin-sitemap@0.8.2:
+    resolution: {integrity: sha512-bqIw6NVOXg6je81lzX8Lm0vjf8/QSAp8di8fYQzZ3ZdVicOm8+6idBGALJiy1R1FiXNIK8rgORO6HBqXyHW+iQ==}
 
   vite-plugin-svg-icons@2.0.1:
     resolution: {integrity: sha512-6ktD+DhV6Rz3VtedYvBKKVA2eXF+sAQVaKkKLDSqGUfnhqXl3bj5PPkVTl3VexfTuZy66PmINi8Q6eFnVfRUmA==}
@@ -3545,14 +3554,14 @@ snapshots:
 
   '@types/web-bluetooth@0.0.16': {}
 
-  '@unhead/dom@2.0.12(unhead@2.0.12)':
+  '@unhead/dom@2.0.12(unhead@2.0.14)':
     dependencies:
-      unhead: 2.0.12
+      unhead: 2.0.14
 
-  '@unhead/vue@2.0.12(vue@3.5.18)':
+  '@unhead/vue@2.0.14(vue@3.5.18)':
     dependencies:
       hookable: 5.5.3
-      unhead: 2.0.12
+      unhead: 2.0.14
       vue: 3.5.18
 
   '@vavt/copy2clipboard@1.0.3': {}
@@ -5698,7 +5707,7 @@ snapshots:
 
   undici-types@7.8.0: {}
 
-  unhead@2.0.12:
+  unhead@2.0.14:
     dependencies:
       hookable: 5.5.3
 
@@ -5783,6 +5792,8 @@ snapshots:
 
   vary@1.1.2: {}
 
+  vite-plugin-sitemap@0.8.2: {}
+
   vite-plugin-svg-icons@2.0.1(vite@7.0.6(@types/node@24.1.0)(sass@1.89.2)(terser@5.43.1)):
     dependencies:
       '@types/svgo': 2.6.4
@@ -5797,10 +5808,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vite-ssg@28.0.0(prettier@3.6.2)(unhead@2.0.12)(vite@7.0.6(@types/node@24.1.0)(sass@1.89.2)(terser@5.43.1))(vue-router@4.5.1(vue@3.5.18))(vue@3.5.18):
+  vite-ssg@28.0.0(prettier@3.6.2)(unhead@2.0.14)(vite@7.0.6(@types/node@24.1.0)(sass@1.89.2)(terser@5.43.1))(vue-router@4.5.1(vue@3.5.18))(vue@3.5.18):
     dependencies:
-      '@unhead/dom': 2.0.12(unhead@2.0.12)
-      '@unhead/vue': 2.0.12(vue@3.5.18)
+      '@unhead/dom': 2.0.12(unhead@2.0.14)
+      '@unhead/vue': 2.0.14(vue@3.5.18)
       ansis: 4.1.0
       cac: 6.7.14
       html-minifier-terser: 7.2.0

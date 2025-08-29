@@ -39,6 +39,22 @@ import { ref, reactive, onMounted, nextTick } from 'vue'
 import CommentForm from '@/components/comment-form/index.vue'
 import CommentList from '@/components/comment-list/index.vue'
 import { getBoardPage } from '@/api/board'
+import { generatePageSeo } from '@/config/seo'
+import { useSeoMeta } from '@unhead/vue'
+
+// SEO配置
+const seoData = generatePageSeo('board')
+useSeoMeta({
+  title: seoData.title,
+  description: seoData.description,
+  keywords: seoData.keywords,
+  ogTitle: seoData.title,
+  ogDescription: seoData.description,
+  ogImage: seoData.image,
+  ogUrl: `${seoData.url}/board`,
+  twitterTitle: seoData.title,
+  twitterDescription: seoData.description
+})
 
 // 留言数据
 const messages = ref([])

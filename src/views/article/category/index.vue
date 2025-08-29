@@ -28,6 +28,8 @@ import articleList from '@/components/article/index.vue'
 import { useRoute } from 'vue-router'
 import { categoryStatistics, statistics } from '@/api'
 import { useRouter } from 'vue-router'
+import { generateCategorySeo, generatePageSeo } from '@/config/seo'
+import { useSeoMeta } from '@unhead/vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -97,6 +99,42 @@ const updateCurrentCategory = category => {
     currentCategory.articleCount = category.articleCount
     currentCategory.name = category.name
     currentCategory.id = category.id
+
+    // 更新SEO信息
+    updateSEO(category)
+  }
+}
+
+// SEO配置（动态更新）
+const updateSEO = category => {
+  if (category && category.id) {
+    // 具体分类页面
+    const seoData = generateCategorySeo(category)
+    useSeoMeta({
+      title: seoData.title,
+      description: seoData.description,
+      keywords: seoData.keywords,
+      ogTitle: seoData.title,
+      ogDescription: seoData.description,
+      ogImage: seoData.image,
+      ogUrl: seoData.url,
+      twitterTitle: seoData.title,
+      twitterDescription: seoData.description
+    })
+  } else {
+    // “全部”分类页面
+    const seoData = generatePageSeo('category')
+    useSeoMeta({
+      title: seoData.title,
+      description: seoData.description,
+      keywords: seoData.keywords,
+      ogTitle: seoData.title,
+      ogDescription: seoData.description,
+      ogImage: seoData.image,
+      ogUrl: `${seoData.url}/category`,
+      twitterTitle: seoData.title,
+      twitterDescription: seoData.description
+    })
   }
 }
 

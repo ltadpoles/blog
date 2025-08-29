@@ -59,6 +59,23 @@ import user from '@/components/user/index.vue'
 import articleList from '@/components/article/index.vue'
 import { useRouter } from 'vue-router'
 import { categoryStatistics, tagStatistics } from '@/api'
+import { generatePageSeo } from '@/config/seo'
+import { useSeoMeta } from '@unhead/vue'
+
+// SEO配置
+const seoData = generatePageSeo('home')
+useSeoMeta({
+  title: seoData.title,
+  description: seoData.description,
+  keywords: seoData.keywords,
+  ogTitle: seoData.title,
+  ogDescription: seoData.description,
+  ogImage: seoData.image,
+  ogUrl: seoData.url,
+  twitterTitle: seoData.title,
+  twitterDescription: seoData.description,
+  twitterImage: seoData.image
+})
 
 const router = useRouter()
 

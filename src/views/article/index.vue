@@ -88,8 +88,12 @@ import { getCommentPage } from '@/api/comment'
 import { dayjs } from 'element-plus'
 import CommentForm from '@/components/comment-form/index.vue'
 import CommentList from '@/components/comment-list/index.vue'
+import { generateArticleSeo } from '@/config/seo'
+import { debounce } from '@/utils'
+import { useSeoMeta } from '@unhead/vue'
 
 const settingStore = useSettingStore()
+const route = useRoute()
 
 let info = reactive({
   content: '',
@@ -145,16 +149,6 @@ const calculateOffsets = () => {
   }
 }
 
-const debounce = (func, delay) => {
-  let timer = null
-  return (...args) => {
-    clearTimeout(timer)
-    timer = setTimeout(() => {
-      func.apply(this, args)
-    }, delay)
-  }
-}
-
 const handleScroll = debounce(() => {
   if (info.catalogList.length === 0) {
     return
@@ -206,12 +200,46 @@ const handleResize = debounce(() => {
   calculateOffsets()
 }, 200)
 
-const route = useRoute()
+// SEO配置（当文章信息加载后动态更新）
+const updateSEO = articleData => {
+  if (articleData) {
+    const seoData = generateArticleSeo({
+      id: articleData.id,
+      title: articleData.title,
+      description: articleData.description,
+      content: articleData.content,
+      tags: articleData.tag || [],
+      createTime: articleData.createTime,
+      updateTime: articleData.updateTime
+    })
+
+    useSeoMeta({
+      title: seoData.title,
+      description: seoData.description,
+      keywords: seoData.keywords,
+      ogTitle: seoData.title,
+      ogDescription: seoData.description,
+      ogImage: seoData.image,
+      ogUrl: seoData.url,
+      ogType: 'article',
+      'article:author': seoData.author,
+      'article:published_time': seoData.publishedTime,
+      'article:modified_time': seoData.modifiedTime,
+      twitterTitle: seoData.title,
+      twitterDescription: seoData.description,
+      twitterImage: seoData.image
+    })
+  }
+}
+
 const getInfo = async () => {
   const id = route.params.id
   let { data } = await articleDetail({ id })
   info.content = data.data.content
   info = Object.assign(info, data.data)
+
+  // 文章信息加载完成后更新SEO
+  updateSEO(data.data)
 }
 
 // 获取评论列表

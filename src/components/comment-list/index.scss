@@ -208,7 +208,6 @@
   &-content {
     white-space: pre-wrap;
     line-height: 1.6;
-    font-size: 0.9rem;
   }
 
   &-more {
@@ -270,12 +269,6 @@
         grid-template-columns: 28px 1fr;
         gap: 6px;
         padding: 10px 8px;
-      }
-
-      &-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
       }
 
       &-actions {

@@ -1,7 +1,7 @@
 .header {
   position: fixed;
   z-index: 99999;
-  width: 100vw;
+  width: 100%;
   height: 64px;
   padding: 0 20px;
   display: flex;
@@ -9,6 +9,8 @@
   justify-content: space-between;
   background-color: var(--el-bg-color);
   border-bottom: 1px solid var(--el-border-color);
+  box-sizing: border-box;
+  overflow-x: hidden;
 
   &-left {
     display: flex;
@@ -16,18 +18,21 @@
     gap: 5px;
     margin-right: 60px;
     cursor: pointer;
+    min-width: 0;
   }
 
   &-menu {
     display: flex;
     gap: 30px;
     flex: 1;
+    min-width: 0;
 
     &-item {
       display: flex;
       gap: 3px;
       align-items: center;
       cursor: pointer;
+      white-space: nowrap;
 
       &-active {
         color: var(--el-color-primary);
@@ -37,5 +42,22 @@
 
   &-right {
     display: flex;
+  }
+}
+
+// 移动端优化
+@media screen and (max-width: 768px) {
+  .header {
+    padding: 0 15px;
+
+    &-left {
+      margin-right: 10px;
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .header {
+    padding: 0 10px;
   }
 }

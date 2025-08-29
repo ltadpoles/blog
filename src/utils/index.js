@@ -9,6 +9,22 @@ export const getImageUrl = url => {
 }
 
 /**
+ * 防抖函数
+ * @param {Function} func - 要防抖的函数
+ * @param {number} delay - 延迟时间（毫秒）
+ * @returns {Function} 防抖后的函数
+ */
+export const debounce = (func, delay = 300) => {
+  let timer = null
+  return (...args) => {
+    clearTimeout(timer)
+    timer = setTimeout(() => {
+      func.apply(this, args)
+    }, delay)
+  }
+}
+
+/**
  * XSS防护工具函数
  */
 export const xssUtils = {

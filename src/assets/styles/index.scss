@@ -39,9 +39,12 @@ h1 {
 .view {
   display: flex;
   gap: 10px;
+  max-width: 100%;
+  overflow-x: hidden;
 
   &-content {
     flex: 1;
+    min-width: 0;
   }
 
   &-sidebar {
@@ -79,6 +82,21 @@ h1 {
 @media screen and (max-width: 768px) {
   .hidden-mini {
     display: none !important;
+  }
+
+  .view {
+    flex-direction: column;
+    gap: 15px;
+
+    &-sidebar {
+      width: 100%;
+      min-width: auto;
+    }
+  }
+
+  body,
+  html {
+    overflow-x: hidden;
   }
 }
 
