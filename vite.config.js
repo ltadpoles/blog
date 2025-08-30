@@ -48,7 +48,7 @@ export default defineConfig(() => {
       })
     ],
     ssr: {
-      noExternal: ['element-plus', 'md-editor-v3']
+      noExternal: ['element-plus', 'md-editor-v3', '@unhead/vue']
     },
     resolve: {
       alias: {

@@ -48,6 +48,22 @@ const loading = ref(false)
 // 文章列表引用
 const articleRef = ref(null)
 
+// 创建响应式的SEO数据
+const seoData = ref({
+  title: '分类页 - 游荡de蝌蚪',
+  description: '按分类浏览游荡de蝌蚪博客的文章',
+  keywords: '文章分类,技术分类,博客分类,生活分类',
+  ogTitle: '分类页 - 游荡de蝌蚪',
+  ogDescription: '按分类浏览游荡de蝌蚪博客的文章',
+  ogImage: '/logo.svg',
+  ogUrl: 'https://www.yddekd.com/category',
+  twitterTitle: '分类页 - 游荡de蝌蚪',
+  twitterDescription: '按分类浏览游荡de蝌蚪博客的文章'
+})
+
+// 使用响应式的SEO数据
+useSeoMeta(seoData)
+
 // 计算当前选中的分类
 const selectedCategory = computed(() => {
   if (categoryList.value.length === 0) {
@@ -109,32 +125,32 @@ const updateCurrentCategory = category => {
 const updateSEO = category => {
   if (category && category.id) {
     // 具体分类页面
-    const seoData = generateCategorySeo(category)
-    useSeoMeta({
-      title: seoData.title,
-      description: seoData.description,
-      keywords: seoData.keywords,
-      ogTitle: seoData.title,
-      ogDescription: seoData.description,
-      ogImage: seoData.image,
-      ogUrl: seoData.url,
-      twitterTitle: seoData.title,
-      twitterDescription: seoData.description
-    })
+    const generatedSeoData = generateCategorySeo(category)
+    seoData.value = {
+      title: generatedSeoData.title,
+      description: generatedSeoData.description,
+      keywords: generatedSeoData.keywords,
+      ogTitle: generatedSeoData.title,
+      ogDescription: generatedSeoData.description,
+      ogImage: generatedSeoData.image,
+      ogUrl: generatedSeoData.url,
+      twitterTitle: generatedSeoData.title,
+      twitterDescription: generatedSeoData.description
+    }
   } else {
     // “全部”分类页面
-    const seoData = generatePageSeo('category')
-    useSeoMeta({
-      title: seoData.title,
-      description: seoData.description,
-      keywords: seoData.keywords,
-      ogTitle: seoData.title,
-      ogDescription: seoData.description,
-      ogImage: seoData.image,
-      ogUrl: `${seoData.url}/category`,
-      twitterTitle: seoData.title,
-      twitterDescription: seoData.description
-    })
+    const generatedSeoData = generatePageSeo('category')
+    seoData.value = {
+      title: generatedSeoData.title,
+      description: generatedSeoData.description,
+      keywords: generatedSeoData.keywords,
+      ogTitle: generatedSeoData.title,
+      ogDescription: generatedSeoData.description,
+      ogImage: generatedSeoData.image,
+      ogUrl: `${generatedSeoData.url}/category`,
+      twitterTitle: generatedSeoData.title,
+      twitterDescription: generatedSeoData.description
+    }
   }
 }
 
@@ -157,7 +173,8 @@ watch(
         articleRef.value.getList({ category: category.id })
       }
     }
-  }
+  },
+  { immediate: true } // 立即执行一次
 )
 
 onMounted(() => {

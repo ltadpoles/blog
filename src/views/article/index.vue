@@ -95,6 +95,19 @@ import { useSeoMeta } from '@unhead/vue'
 const settingStore = useSettingStore()
 const route = useRoute()
 
+// 创建响应式的SEO数据
+const seoData = ref({
+  title: '文章详情 - 游荡de蝌蚪',
+  description: '正在加载文章内容...',
+  keywords: '文章详情,技术文章,博客文章',
+  ogTitle: '文章详情 - 游荡de蝌蚪',
+  ogDescription: '正在加载文章内容...',
+  ogType: 'article'
+})
+
+// 使用响应式的SEO数据
+useSeoMeta(seoData)
+
 let info = reactive({
   content: '',
   category: [],
@@ -203,7 +216,7 @@ const handleResize = debounce(() => {
 // SEO配置（当文章信息加载后动态更新）
 const updateSEO = articleData => {
   if (articleData) {
-    const seoData = generateArticleSeo({
+    const generatedSeoData = generateArticleSeo({
       id: articleData.id,
       title: articleData.title,
       description: articleData.description,
@@ -213,22 +226,23 @@ const updateSEO = articleData => {
       updateTime: articleData.updateTime
     })
 
-    useSeoMeta({
-      title: seoData.title,
-      description: seoData.description,
-      keywords: seoData.keywords,
-      ogTitle: seoData.title,
-      ogDescription: seoData.description,
-      ogImage: seoData.image,
-      ogUrl: seoData.url,
+    // 更新响应式的SEO数据
+    seoData.value = {
+      title: generatedSeoData.title,
+      description: generatedSeoData.description,
+      keywords: generatedSeoData.keywords,
+      ogTitle: generatedSeoData.title,
+      ogDescription: generatedSeoData.description,
+      ogImage: generatedSeoData.image,
+      ogUrl: generatedSeoData.url,
       ogType: 'article',
-      'article:author': seoData.author,
-      'article:published_time': seoData.publishedTime,
-      'article:modified_time': seoData.modifiedTime,
-      twitterTitle: seoData.title,
-      twitterDescription: seoData.description,
-      twitterImage: seoData.image
-    })
+      'article:author': generatedSeoData.author,
+      'article:published_time': generatedSeoData.publishedTime,
+      'article:modified_time': generatedSeoData.modifiedTime,
+      twitterTitle: generatedSeoData.title,
+      twitterDescription: generatedSeoData.description,
+      twitterImage: generatedSeoData.image
+    }
   }
 }
 

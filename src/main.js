@@ -1,5 +1,4 @@
 import { ViteSSG } from 'vite-ssg'
-// import { useHead } from '@unhead/vue'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
@@ -14,8 +13,6 @@ import svgIcon from './components/svgIcon/index.vue'
 import './assets/styles/index.scss'
 
 export const createApp = ViteSSG(App, { routes }, ({ app, initialState, router, onSSRAppRendered }) => {
-  // 全局SEO已在HTML中配置，各页面单独使用useSeoMeta进行具体配置
-
   app.component('SvgIcon', svgIcon)
   app.use(store)
 

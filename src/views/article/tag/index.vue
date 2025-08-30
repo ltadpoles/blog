@@ -48,6 +48,22 @@ const loading = ref(false)
 // 文章列表引用
 const articleRef = ref(null)
 
+// 创建响应式的SEO数据
+const seoData = ref({
+  title: '标签页 - 游荡de蝌蚪',
+  description: '按标签浏览游荡de蝌蚪博客的文章',
+  keywords: '文章标签,技术标签,博客标签,生活标签',
+  ogTitle: '标签页 - 游荡de蝌蚪',
+  ogDescription: '按标签浏览游荡de蝌蚪博客的文章',
+  ogImage: '/logo.svg',
+  ogUrl: 'https://www.yddekd.com/tag',
+  twitterTitle: '标签页 - 游荡de蝌蚪',
+  twitterDescription: '按标签浏览游荡de蝌蚪博客的文章'
+})
+
+// 使用响应式的SEO数据
+useSeoMeta(seoData)
+
 // 计算当前选中的标签
 const selectedTag = computed(() => {
   if (tagList.value.length === 0) {
@@ -109,32 +125,32 @@ const updateCurrentTag = tag => {
 const updateSEO = tag => {
   if (tag && tag.id) {
     // 具体标签页面
-    const seoData = generateTagSeo(tag)
-    useSeoMeta({
-      title: seoData.title,
-      description: seoData.description,
-      keywords: seoData.keywords,
-      ogTitle: seoData.title,
-      ogDescription: seoData.description,
-      ogImage: seoData.image,
-      ogUrl: seoData.url,
-      twitterTitle: seoData.title,
-      twitterDescription: seoData.description
-    })
+    const generatedSeoData = generateTagSeo(tag)
+    seoData.value = {
+      title: generatedSeoData.title,
+      description: generatedSeoData.description,
+      keywords: generatedSeoData.keywords,
+      ogTitle: generatedSeoData.title,
+      ogDescription: generatedSeoData.description,
+      ogImage: generatedSeoData.image,
+      ogUrl: generatedSeoData.url,
+      twitterTitle: generatedSeoData.title,
+      twitterDescription: generatedSeoData.description
+    }
   } else {
     // “全部”标签页面
-    const seoData = generatePageSeo('tag')
-    useSeoMeta({
-      title: seoData.title,
-      description: seoData.description,
-      keywords: seoData.keywords,
-      ogTitle: seoData.title,
-      ogDescription: seoData.description,
-      ogImage: seoData.image,
-      ogUrl: `${seoData.url}/tag`,
-      twitterTitle: seoData.title,
-      twitterDescription: seoData.description
-    })
+    const generatedSeoData = generatePageSeo('tag')
+    seoData.value = {
+      title: generatedSeoData.title,
+      description: generatedSeoData.description,
+      keywords: generatedSeoData.keywords,
+      ogTitle: generatedSeoData.title,
+      ogDescription: generatedSeoData.description,
+      ogImage: generatedSeoData.image,
+      ogUrl: `${generatedSeoData.url}/tag`,
+      twitterTitle: generatedSeoData.title,
+      twitterDescription: generatedSeoData.description
+    }
   }
 }
 
@@ -157,7 +173,8 @@ watch(
         articleRef.value.getList({ tags: tag.id ? [tag.id] : [] })
       }
     }
-  }
+  },
+  { immediate: true } // 立即执行一次
 )
 
 onMounted(() => {
