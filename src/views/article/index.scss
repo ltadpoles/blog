@@ -4,6 +4,74 @@
   box-shadow: var(--el-box-shadow);
 }
 
+// 左侧浮动点赞按钮
+.view {
+  position: relative;
+}
+
+.article-floating-like {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+
+  // 根据版心宽度计算按钮位置
+  // 版心最大宽度1200px + 左右padding 40px = 1240px
+  // 按钮位于版心左侧20px处（更靠近文章内容）
+  left: calc(50% - 620px - 20px); // 50%屏幕中心 - 620px版心一半+padding - 20px按钮距离
+
+  // 当屏幕太小时使用固定边距，避免按钮超出屏幕
+  @media (max-width: 1400px) {
+    left: 20px;
+  }
+
+  .floating-like-badge {
+    :deep(.el-badge__content) {
+      font-size: 10px;
+      padding: 0 4px;
+      min-width: 16px;
+      height: 16px;
+      line-height: 16px;
+      border: 1px solid #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  .floating-like-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    box-shadow: var(--el-box-shadow);
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    &.liked {
+      .svg-icon {
+        color: var(--el-color-primary);
+      }
+    }
+
+    .svg-icon {
+      font-size: 24px;
+      transition: all 0.3s ease;
+      color: var(--el-text-color-secondary);
+    }
+  }
+
+  @media (max-width: 1400px) {
+      display: none;
+  }
+}
+
 .article-title {
   margin-bottom: 20px;
   font-size: 1.6rem;
@@ -31,6 +99,76 @@
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+// 文章点赞区域
+.article-like-section {
+  margin: 30px 0;
+  text-align: center;
+
+  .article-like-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 30px;
+    border-radius: 20px;
+    background-color: var(--el-bg-color-page);
+    border: 1px solid var(--el-border-color-light);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+    color: var(--el-text-color-regular);
+
+    &:hover {
+      background-color: rgba(64, 158, 255, 0.1);
+      border-color: var(--el-color-primary);
+      transform: translateY(-2px);
+      color: var(--el-color-primary);
+
+      .svg-icon {
+        transform: scale(1.1);
+        color: var(--el-color-primary);
+      }
+    }
+
+    &.liked {
+      background-color: var(--el-color-primary);
+      border-color: var(--el-color-primary);
+      color: white;
+
+      &:hover {
+        background-color: var(--el-color-primary-light-3);
+        border-color: var(--el-color-primary-light-3);
+        transform: translateY(-2px);
+
+        .svg-icon {
+          transform: scale(1.2);
+        }
+      }
+
+      .svg-icon {
+        color: white;
+        transform: scale(1.1);
+      }
+
+      span {
+        color: white;
+      }
+    }
+
+    .svg-icon {
+      font-size: 28px;
+      transition: all 0.3s ease;
+      color: var(--el-text-color-secondary);
+    }
+
+    span {
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+  }
 }
 
 .article-menu {

@@ -1,5 +1,19 @@
 <template>
   <div class="view">
+    <!-- 左侧浮动点赞按钮 -->
+    <div class="article-floating-like">
+      <el-badge
+        :value="info.likeCount || 0"
+        :max="999"
+        :hidden="(info.likeCount || 0) === 0"
+        class="floating-like-badge"
+      >
+        <div class="floating-like-button" @click="toggleArticleLike" :class="{ liked: isArticleLiked }">
+          <SvgIcon width="1.2rem" height="1.2rem" name="like" :class="{ liked: isArticleLiked }" />
+        </div>
+      </el-badge>
+    </div>
+
     <div class="view-content">
       <h1 class="article-title">{{ info.title }}</h1>
       <div class="article-info">
@@ -16,6 +30,14 @@
       <div class="article-tags">
         <SvgIcon name="tag" />
         <el-tag type="primary" v-for="tag in info.tag" :key="tag.id">{{ tag.name }}</el-tag>
+      </div>
+
+      <!-- 文章点赞区域 -->
+      <div class="article-like-section">
+        <div class="article-like-button" @click="toggleArticleLike" :class="{ liked: isArticleLiked }">
+          <SvgIcon width="1.2rem" height="1.2rem" name="like" :class="{ liked: isArticleLiked }" />
+          <span>{{ info.likeCount || 0 }}</span>
+        </div>
       </div>
 
       <!-- 评论区域 -->
@@ -50,7 +72,7 @@
         </div>
       </div>
     </div>
-    <div class="view-sidebar hidden-mini">
+    <div class="view-sidebar hidden-mini hidden">
       <el-affix :offset="64">
         <div class="card">
           <div class="card-header">
@@ -86,13 +108,17 @@ import { useRoute } from 'vue-router'
 import { articleDetail } from '@/api/article'
 import { getCommentPage } from '@/api/comment'
 import { dayjs } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import CommentForm from '@/components/comment-form/index.vue'
 import CommentList from '@/components/comment-list/index.vue'
 import { generateArticleSeo } from '@/config/seo'
 import { debounce } from '@/utils'
 import { useSeoMeta } from '@unhead/vue'
+import { likeUserLikes, toggleLike } from '@/api/like'
+import { useUserStore } from '@/stores/modules/user'
 
 const settingStore = useSettingStore()
+const userStore = useUserStore()
 const route = useRoute()
 
 // 创建响应式的SEO数据
@@ -113,7 +139,8 @@ let info = reactive({
   category: [],
   tag: [],
   catalogList: [],
-  activeId: null
+  activeId: null,
+  likeCount: 0 // 初始化点赞数量
 })
 
 // 评论相关数据
@@ -123,6 +150,9 @@ const commentPagination = reactive({
   pageSize: 10,
   total: 0
 })
+
+// 文章点赞相关数据
+const isArticleLiked = ref(false) // 明确设置初始值为false
 
 const onGetCatalog = list => {
   info.catalogList = list
@@ -249,11 +279,21 @@ const updateSEO = articleData => {
 const getInfo = async () => {
   const id = route.params.id
   let { data } = await articleDetail({ id })
+
+  // 更新文章信息
   info.content = data.data.content
   info = Object.assign(info, data.data)
 
+  // 确保 likeCount 有默认值
+  if (typeof info.likeCount === 'undefined' || info.likeCount === null) {
+    info.likeCount = 0
+  }
+
   // 文章信息加载完成后更新SEO
   updateSEO(data.data)
+
+  // 获取用户点赞状态（在文章信息加载完成后）
+  await getUserArticleLikeStatus()
 }
 
 // 获取评论列表
@@ -335,11 +375,62 @@ const scrollToCommentList = () => {
   }
 }
 
+// 获取用户对文章的点赞状态
+const getUserArticleLikeStatus = async () => {
+  // 确保用户已登录且文章信息已加载
+  if (!userStore.message.userId || !route.params.id) {
+    isArticleLiked.value = false
+    return
+  }
+
+  try {
+    const { data } = await likeUserLikes({ userId: userStore.message.userId })
+    const articleLikes = data.data?.filter(like => like.entityType === 'article') || []
+    const articleId = Number(route.params.id)
+    isArticleLiked.value = articleLikes.some(like => like.entityId === articleId)
+  } catch {
+    isArticleLiked.value = false
+  }
+}
+
+// 切换文章点赞状态
+const toggleArticleLike = async () => {
+  if (!userStore.message.userId) {
+    ElMessage.warning('请先登录后再点赞')
+    return
+  }
+
+  try {
+    const articleId = Number(route.params.id)
+    const { data } = await toggleLike({
+      entityId: articleId,
+      entityType: 'article',
+      isLike: !isArticleLiked.value,
+      userId: userStore.message.userId
+    })
+
+    userStore.setMessage({ userId: data.data?.userId })
+
+    // 更新本地点赞状态
+    isArticleLiked.value = !isArticleLiked.value
+
+    // 更新点赞数量
+    info.likeCount = isArticleLiked.value ? (info.likeCount || 0) + 1 : Math.max(0, (info.likeCount || 0) - 1)
+  } catch {
+    ElMessage.error('点赞操作失败，请稍后重试')
+  }
+}
+
 onMounted(async () => {
-  await getInfo()
-  await getCommentList()
+  // 添加事件监听器
   window.addEventListener('scroll', handleScroll)
   window.addEventListener('resize', handleResize)
+
+  // 加载文章信息（包括点赞状态）
+  await getInfo()
+
+  // 加载评论列表
+  await getCommentList()
 
   // 等待文章内容渲染完成后再计算锚点
   setTimeout(calculateOffsets, 500)
