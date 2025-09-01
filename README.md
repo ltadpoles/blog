@@ -294,35 +294,6 @@ pnpm build
 # 可以直接部署到 Nginx、Vercel、Netlify 等平台
 ```
 
-### Nginx 配置示例
-
-```nginx
-server {
-    listen 80;
-    server_name yourdomain.com;
-    root /var/www/blog/dist;
-    index index.html;
-    
-    # 处理 SPA 路由
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-    
-    # 静态资源缓存
-    location /static/ {
-        expires 1y;
-        add_header Cache-Control "public, no-transform";
-    }
-    
-    # API 代理（如果需要）
-    location /api/ {
-        proxy_pass http://your-backend-api;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-}
-```
-
 ### 环境变量
 
 在项目根目录创建环境变量文件：
@@ -336,9 +307,9 @@ VITE_SITE_URL=https://yourdomain.com
 ## 🤝 贡献指南
 
 1. Fork 本项目
-2. 创建特性分支：`git checkout -b feature/AmazingFeature`
+2. 创建特性分支：`git checkout -b feature`
 3. 提交更改：`git commit -m 'Add some AmazingFeature'`
-4. 推送到分支：`git push origin feature/AmazingFeature`
+4. 推送到分支：`git push origin feature`
 5. 打开 Pull Request
 
 ### 代码规范
