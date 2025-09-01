@@ -1,8 +1,17 @@
+<!--
+  布局组件 - 整体页面结构
+  包含头部、主内容区域、底部和返回顶部按钮
+  支持路由切换动画和滚动监听
+-->
 <template>
   <div class="layout">
+    <!-- 页面头部 -->
     <layout-header />
+
+    <!-- 主内容区域 -->
     <div class="layout-main">
       <div class="layout-main-content">
+        <!-- 路由出口，支持切换动画 -->
         <router-view v-slot="{ Component }">
           <transition name="slide-fade">
             <component :is="Component" />
@@ -10,8 +19,11 @@
         </router-view>
       </div>
     </div>
+
+    <!-- 页面底部 -->
     <layout-footer />
 
+    <!-- 返回顶部按钮 -->
     <SvgIcon
       name="scrollTop"
       width="50px"
@@ -30,8 +42,13 @@ import layoutFooter from './footer/index.vue'
 import { userInfo } from '@/api/user'
 import { useUserStore } from '@/stores/modules/user'
 
+// 返回顶部按钮显示状态
 const isShowScrollTop = ref(false)
 
+/**
+ * 返回顶部功能
+ * 平滑滚动到页面顶部
+ */
 const scrollToTop = () => {
   document.documentElement.scrollTo({
     top: 0,
@@ -39,6 +56,10 @@ const scrollToTop = () => {
   })
 }
 
+/**
+ * 滚动监听器
+ * 滚动超过 10px 时显示返回顶部按钮
+ */
 const handleScroll = () => {
   const scrollTop = document.documentElement.scrollTop
   if (scrollTop > 10) {
@@ -48,12 +69,17 @@ const handleScroll = () => {
   }
 }
 
+/**
+ * 获取用户信息
+ * 页面初始化时获取用户数据并存储到 store
+ */
 const userStore = useUserStore()
 const getUserInfo = async () => {
   let { data } = await userInfo()
   userStore.setUser(data.data)
 }
 
+// 组件生命周期管理
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
   getUserInfo()

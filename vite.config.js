@@ -1,3 +1,8 @@
+/**
+ * Vite 构建配置
+ * 支持 Vue 3、SSG、自动导入、SVG 图标、站点地图等功能
+ */
+
 import { fileURLToPath, URL } from 'node:url'
 import path from 'node:path'
 
@@ -14,6 +19,8 @@ export default defineConfig(() => {
     envDir: 'env',
     plugins: [
       vue(),
+
+      // Vue 3 和 Element Plus 自动导入
       AutoImport({
         resolvers: [ElementPlusResolver()],
         imports: [
@@ -24,21 +31,27 @@ export default defineConfig(() => {
           }
         ]
       }),
+
+      // 组件自动导入
       Components({
         resolvers: [ElementPlusResolver()]
       }),
+
+      // SVG 图标系统
       createSvgIconsPlugin({
         iconDirs: [path.resolve(process.cwd(), 'src/assets/svg')],
         symbolId: 'icon-[dir]-[name]'
       }),
+
+      // 站点地图生成
       sitemap({
-        hostname: 'https://www.yddekd.com', // 请替换为实际域名
+        hostname: 'https://www.yddekd.com',
         generateRobotsTxt: true,
         robots: [
           {
             userAgent: '*',
             allow: ['/', '/article/', '/category/', '/tag/', '/archive', '/about', '/board'],
-            sitemap: 'https://www.yddekd.com/sitemap.xml' // 请替换为实际域名
+            sitemap: 'https://www.yddekd.com/sitemap.xml'
           }
         ],
         routes: ['/', '/archive', '/about', '/board', '/category', '/tag'],
@@ -47,14 +60,19 @@ export default defineConfig(() => {
         lastmod: new Date().toISOString()
       })
     ],
+    // SSR 配置
     ssr: {
       noExternal: ['element-plus', 'md-editor-v3', '@unhead/vue']
     },
+
+    // 路径别名配置
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url))
       }
     },
+
+    // 开发服务器配置
     server: {
       port: 816,
       proxy: {
@@ -64,12 +82,14 @@ export default defineConfig(() => {
         }
       }
     },
+
+    // 构建配置
     build: {
       rollupOptions: {
         output: {
-          chunkFileNames: 'static/js/[name]-[hash].js', // 引入文件名的名称
-          entryFileNames: 'static/js/[name]-[hash].js', // 包的入口文件名称
-          assetFileNames: 'static/[ext]/[name]-[hash].[ext]' // 资源文件像 字体，图片等
+          chunkFileNames: 'static/js/[name]-[hash].js',
+          entryFileNames: 'static/js/[name]-[hash].js',
+          assetFileNames: 'static/[ext]/[name]-[hash].[ext]'
         }
       },
       chunkSizeWarningLimit: 1500

@@ -1,28 +1,45 @@
+<!--
+  文章列表组件
+  显示文章列表、支持分页加载、分类筛选、标签过滤
+  对外暴露 getList、resetList 等方法和 loading、hasMore 状态
+-->
 <template>
   <div class="article">
+    <!-- 文章列表 -->
     <div class="article-item" v-for="article in list" :key="article.id">
       <div class="article-content" @click="getInfo(article.id)">
+        <!-- 移动端封面图 -->
         <div class="article-image hidden-large">
           <img :src="ImgUrl + article.coverImgId" alt="" />
         </div>
+
+        <!-- 文章主体内容 -->
         <div class="article-main">
           <div class="article-content-title">
+            <!-- 置顶标识 -->
             <div class="article-content-title-top" v-if="article.top === '1'">
               <span>置顶</span>
             </div>
             <h1>{{ article.title }}</h1>
           </div>
+
+          <!-- 文章摘要 -->
           <div class="article-content-description">
             <el-text line-clamp="3">
               {{ article.description }}
             </el-text>
           </div>
         </div>
+
+        <!-- 桌面端封面图 -->
         <div class="article-image hidden hidden-mini">
           <img :src="ImgUrl + article.coverImgId" alt="" />
         </div>
       </div>
+
       <el-divider />
+
+      <!-- 文章信息底部 -->
       <div class="article-content-footer">
         <div class="article-content-footer-left">
           <SvgIcon name="calendar" />
@@ -32,6 +49,7 @@
       </div>
     </div>
 
+    <!-- 加载更多按钮 -->
     <div class="article-footer">
       <div class="load-more" @click="loadMore" v-if="canLoadMore" :class="{ loading: loading }">
         {{ loading ? '加载中...' : '查看更多' }}
@@ -48,14 +66,15 @@ import { dayjs } from 'element-plus'
 import { useRouter } from 'vue-router'
 import config from '@/config'
 
+// 图片资源基础路径
 const ImgUrl = config.BASEURL + '/file/download?fileId='
-
 const router = useRouter()
 
-// 文章列表数据
-const list = ref([])
-const loading = ref(false)
-const hasMore = ref(true)
+// 组件状态
+const list = ref([]) // 文章列表数据
+const loading = ref(false) // 加载状态
+const hasMore = ref(true) // 是否还有更多数据
+const total = ref(0) // 数据总数
 
 // 查询参数
 const query = reactive({
@@ -67,15 +86,22 @@ const query = reactive({
   }
 })
 
-// 总数统计
-const total = ref(0)
-
-// 计算是否还有更多数据
+/**
+ * 计算是否还可以加载更多
+ * @returns {boolean} 是否可以加载更多
+ */
 const canLoadMore = computed(() => {
   return !loading.value && hasMore.value && list.value.length < total.value
 })
 
-// 获取文章列表
+/**
+ * 获取文章列表
+ * @param {Object} options - 查询参数
+ * @param {number} options.pageNum - 页码，默认 1
+ * @param {string} options.category - 分类 ID
+ * @param {Array} options.tags - 标签数组
+ * @returns {Promise<number>} 返回数据总数
+ */
 const getList = async ({ pageNum = 1, category = '', tags = [] }) => {
   try {
     loading.value = true
@@ -106,7 +132,10 @@ const getList = async ({ pageNum = 1, category = '', tags = [] }) => {
   }
 }
 
-// 加载更多
+/**
+ * 加载更多数据
+ * 获取下一页数据并追加到列表末尾
+ */
 const loadMore = async () => {
   if (!canLoadMore.value) {
     return
@@ -120,24 +149,33 @@ const loadMore = async () => {
   })
 }
 
-// 重置列表（用于切换分类/标签时）
+/**
+ * 重置列表
+ * 用于切换分类/标签时清空现有数据
+ */
 const resetList = () => {
   list.value = []
   query.pageNum = 1
   hasMore.value = true
 }
 
-// 跳转到文章详情
+/**
+ * 跳转到文章详情页
+ * @param {string|number} id - 文章 ID
+ */
 const getInfo = id => {
   router.push('/article/' + id)
 }
 
-// 暴露方法给父组件
+/**
+ * 对外暴露的方法和属性
+ * 供父组件调用
+ */
 defineExpose({
-  getList,
-  resetList,
-  loading: computed(() => loading.value),
-  hasMore: computed(() => hasMore.value)
+  getList, // 获取文章列表方法
+  resetList, // 重置列表方法
+  loading: computed(() => loading.value), // 加载状态
+  hasMore: computed(() => hasMore.value) // 是否还有更多数据
 })
 </script>
 

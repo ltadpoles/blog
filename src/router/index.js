@@ -1,13 +1,23 @@
+/**
+ * 路由配置
+ * 定义博客系统的所有路由和 SEO 信息
+ */
+
 import Layout from '../layout/index.vue'
 import Dashboard from '../views/dashboard/index.vue'
 import { seoConfig } from '../config/seo'
 
+/**
+ * 路由配置数组
+ * 包含所有页面路由、组件引用和 SEO 元数据
+ */
 export const routes = [
   {
     path: '/',
     name: 'Layout',
     component: Layout,
     children: [
+      // 首页 - 文章列表
       {
         path: '/',
         name: 'Dashboard',
@@ -17,6 +27,8 @@ export const routes = [
           description: seoConfig.pages.home.description
         }
       },
+
+      // 归档页面
       {
         path: 'archive',
         name: 'Archive',
@@ -26,6 +38,8 @@ export const routes = [
           description: seoConfig.pages.archive.description
         }
       },
+
+      // 关于页面
       {
         path: 'about',
         name: 'About',
@@ -35,6 +49,8 @@ export const routes = [
           description: seoConfig.pages.about.description
         }
       },
+
+      // 文章详情页
       {
         path: 'article/:id',
         name: 'Article',
@@ -44,6 +60,8 @@ export const routes = [
           description: '阅读文章的详细信息'
         }
       },
+
+      // 分类页面
       {
         path: 'category/:id?',
         name: 'Category',
@@ -53,6 +71,8 @@ export const routes = [
           description: seoConfig.pages.category.description
         }
       },
+
+      // 标签页面
       {
         path: 'tag/:id?',
         name: 'tag',
@@ -62,6 +82,8 @@ export const routes = [
           description: seoConfig.pages.tag.description
         }
       },
+
+      // 留言板页面
       {
         path: 'board',
         name: 'Board',

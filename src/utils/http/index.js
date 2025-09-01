@@ -1,13 +1,22 @@
+/**
+ * HTTP 请求封装
+ * 基于 Axios 实现，提供统一的请求/响应拦截和错误处理
+ */
+
 import config from '@/config'
 import axios from 'axios'
 import { ElNotification } from 'element-plus'
 
+// 创建 Axios 实例
 const http = axios.create({
   timeout: 3000,
   baseURL: config.BASEURL || '/api'
 })
 
-// 添加请求拦截器
+/**
+ * 请求拦截器
+ * 在请求发送前进行预处理
+ */
 http.interceptors.request.use(
   config => {
     return config
@@ -17,11 +26,13 @@ http.interceptors.request.use(
   }
 )
 
-// 添加响应拦截器
+/**
+ * 响应拦截器
+ * 统一处理响应数据和错误状态
+ */
 http.interceptors.response.use(
   function (response) {
-    // 2xx 范围内的状态码都会触发该函数。
-    // 对响应数据做点什么
+    // 2xx 范围内的状态码都会触发该函数
     if (response.data.code === '500' || response.data.code === '403') {
       ElNotification({
         message: response.data.msg,
@@ -32,8 +43,7 @@ http.interceptors.response.use(
     return response
   },
   function (error) {
-    // 超出 2xx 范围的状态码都会触发该函数。
-    // 对响应错误做点什么
+    // 超出 2xx 范围的状态码都会触发该函数
     try {
       switch (error.response.status) {
         case 400:
