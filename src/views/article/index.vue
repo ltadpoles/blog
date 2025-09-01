@@ -1,17 +1,34 @@
 <template>
   <div class="view">
-    <!-- 左侧浮动点赞按钮 -->
-    <div class="article-floating-like">
-      <el-badge
-        :value="info.likeCount || 0"
-        :max="999"
-        :hidden="(info.likeCount || 0) === 0"
-        class="floating-like-badge"
-      >
-        <div class="floating-like-button" @click="toggleArticleLike" :class="{ liked: isArticleLiked }">
-          <SvgIcon width="1.2rem" height="1.2rem" name="like" :class="{ liked: isArticleLiked }" />
-        </div>
-      </el-badge>
+    <!-- 左侧浮动操作按钮 -->
+    <div class="article-floating-actions">
+      <!-- 点赞按钮 -->
+      <div class="floating-action-item">
+        <el-badge
+          :value="info.likeCount || 0"
+          :max="999"
+          :hidden="(info.likeCount || 0) === 0"
+          class="floating-like-badge"
+        >
+          <div class="floating-like-button" @click="toggleArticleLike" :class="{ liked: isArticleLiked }">
+            <SvgIcon width="1.2rem" height="1.2rem" name="like" :class="{ liked: isArticleLiked }" />
+          </div>
+        </el-badge>
+      </div>
+
+      <!-- 评论按钮 -->
+      <div class="floating-action-item">
+        <el-badge
+          :value="commentPagination.total || 0"
+          :max="999"
+          :hidden="(commentPagination.total || 0) === 0"
+          class="floating-comment-badge"
+        >
+          <div class="floating-comment-button" @click="scrollToCommentList">
+            <SvgIcon width="1.2rem" height="1.2rem" name="message" />
+          </div>
+        </el-badge>
+      </div>
     </div>
 
     <div class="view-content">

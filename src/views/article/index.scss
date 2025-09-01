@@ -4,16 +4,19 @@
   box-shadow: var(--el-box-shadow);
 }
 
-// 左侧浮动点赞按钮
+// 左侧浮动操作按钮组
 .view {
   position: relative;
 }
 
-.article-floating-like {
+.article-floating-actions {
   position: fixed;
   top: 50%;
   transform: translateY(-50%);
   z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 
   // 根据版心宽度计算按钮位置
   // 版心最大宽度1200px + 左右padding 40px = 1240px
@@ -25,7 +28,14 @@
     left: 20px;
   }
 
-  .floating-like-badge {
+  .floating-action-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .floating-like-badge,
+  .floating-comment-badge {
     :deep(.el-badge__content) {
       font-size: 10px;
       padding: 0 4px;
@@ -37,12 +47,13 @@
     }
   }
 
-  .floating-like-button {
+  .floating-like-button,
+  .floating-comment-button {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     box-shadow: var(--el-box-shadow);
-    background: none;
+    background: var(--el-bg-color);
     border: none;
     display: flex;
     align-items: center;
@@ -52,23 +63,34 @@
 
     &:hover {
       transform: scale(1.1);
-    }
-
-    &.liked {
-      .svg-icon {
-        color: var(--el-color-primary);
-      }
+      box-shadow: var(--el-box-shadow-dark);
     }
 
     .svg-icon {
-      font-size: 24px;
+      font-size: 20px;
       transition: all 0.3s ease;
       color: var(--el-text-color-secondary);
     }
   }
 
+  .floating-like-button {
+    &.liked {
+      .svg-icon {
+        color: var(--el-color-primary);
+      }
+    }
+  }
+
+  .floating-comment-button {
+    &:hover {
+      .svg-icon {
+        color: var(--el-color-primary);
+      }
+    }
+  }
+
   @media (max-width: 1400px) {
-      display: none;
+    display: none;
   }
 }
 
