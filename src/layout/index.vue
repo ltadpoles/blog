@@ -39,8 +39,8 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import layoutHeader from './header/index.vue'
 import layoutFooter from './footer/index.vue'
-import { userInfo } from '@/api/user'
 import { useUserStore } from '@/stores/modules/user'
+import { websiteInfo } from '@/api'
 
 // 返回顶部按钮显示状态
 const isShowScrollTop = ref(false)
@@ -74,15 +74,15 @@ const handleScroll = () => {
  * 页面初始化时获取用户数据并存储到 store
  */
 const userStore = useUserStore()
-const getUserInfo = async () => {
-  let { data } = await userInfo()
-  userStore.setUser(data.data)
+const getWebSiteInfo = async () => {
+  let { data } = await websiteInfo()
+  userStore.setWebsite(data.data)
 }
 
 // 组件生命周期管理
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
-  getUserInfo()
+  getWebSiteInfo()
 })
 
 onUnmounted(() => {

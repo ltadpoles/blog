@@ -1,9 +1,9 @@
 <template>
   <div class="user">
     <div class="user-img">
-      <img :src="userStore.user.avatar || getImageUrl('avatar.jpg')" alt="" />
+      <img :src="userStore.website.avatar || getImageUrl('avatar.jpg')" alt="" />
     </div>
-    <div class="user-motto">{{ userStore.user.remark }}</div>
+    <div class="user-motto">{{ userStore.website.siteNotice }}</div>
     <div class="user-statistics">
       <div class="user-statistics-item">
         <div class="item-count">{{ statsInfo.articles }}</div>

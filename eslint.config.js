@@ -32,7 +32,7 @@ export default defineConfig([
       'no-debugger': 'error', // 禁止出现debugger
       'no-duplicate-case': 'error', // 禁止出现重复case
       'no-empty': 'error', // 禁止出现空语句块
-      'no-extra-parens': 'error', // 禁止不必要的括号
+      'no-extra-parens': 'off', // 允许不必要的括号，以便与 Prettier 兼容
       'no-func-assign': 'error', // 禁止对Function声明重新赋值
       'no-unreachable': 'error', // 禁止出现[return|throw]之后的代码块
       'no-else-return': 'error', // 禁止if语句中return语句之后有else块

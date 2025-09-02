@@ -7,6 +7,9 @@ import config from '@/config'
 import axios from 'axios'
 import { ElNotification } from 'element-plus'
 
+// 全局维护通知实例，确保同一时间只有一个维护通知
+let maintenanceNotification = null
+
 // 创建 Axios 实例
 const http = axios.create({
   timeout: 3000,
@@ -25,6 +28,30 @@ http.interceptors.request.use(
     return Promise.reject(error)
   }
 )
+
+/**
+ * 处理维护状态
+ * 当遇到 503 状态码时，定向到维护页面
+ */
+const handleMaintenance = () => {
+  // 检查当前 URL 是否已经在维护页面
+  if (typeof window !== 'undefined' && window.location.pathname !== '/maintenance') {
+    // 如果已经存在维护通知，先关闭它
+    if (maintenanceNotification) {
+      maintenanceNotification.close()
+    }
+
+    // 显示通知
+    maintenanceNotification = ElNotification({
+      message: '系统维护中，正在跳转到维护页面...',
+      type: 'warning',
+      duration: 3000
+    })
+
+    // 跳转到维护页面
+    window.location.replace('/maintenance')
+  }
+}
 
 /**
  * 响应拦截器
@@ -70,11 +97,21 @@ http.interceptors.response.use(
             type: 'error'
           })
           break
+        case 429:
+          ElNotification({
+            message: '访问频繁，请稍后再试',
+            type: 'error'
+          })
+          break
         case 500:
           ElNotification({
             message: '服务器错误，请稍后再试',
             type: 'error'
           })
+          break
+        case 503:
+          // 直接调用维护处理函数
+          handleMaintenance()
           break
         default:
           ElNotification({

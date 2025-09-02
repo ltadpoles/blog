@@ -1,35 +1,88 @@
 .footer {
   height: auto;
-  min-height: 60px;
+  min-height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-top: 1px solid var(--el-border-color);
-  padding: 20px;
+  border-top: 1px solid var(--el-border-color-light);
+  padding: 15px 20px;
+  background-color: var(--el-bg-color);
 
   &-content {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
     text-align: center;
+    width: 100%;
+    max-width: 1200px;
+  }
+
+  .running-time {
+    color: var(--el-text-color-primary);
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    .icon {
+      color: var(--el-color-success);
+      font-size: 1.1rem;
+      margin-right: 4px;
+    }
+
+    .time-value {
+      color: var(--el-color-danger);
+      font-weight: 600;
+      padding: 0 2px;
+    }
   }
 
   .copyright {
     color: var(--el-text-color-regular);
-    font-size: 0.9rem;
-  }
+    font-size: 0.92rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
 
-  .icp {
-    a {
+    .icp {
       color: var(--el-text-color-secondary);
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       text-decoration: none;
       transition: color 0.2s ease;
 
       &:hover {
         color: var(--el-color-primary);
         text-decoration: underline;
+      }
+    }
+  }
+
+  .visit-stats {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    .visitor-btn {
+      background-color: var(--el-fill-color-dark);
+      color: var(--el-text-color-regular);
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+
+      &:hover {
+        background-color: var(--el-color-primary-light-9);
+        color: var(--el-color-primary);
       }
     }
   }
@@ -40,7 +93,14 @@
   .footer {
     &-content {
       flex-direction: row;
-      gap: 20px;
+      justify-content: space-between;
+      text-align: left;
+    }
+
+    .running-time,
+    .copyright,
+    .visit-stats {
+      justify-content: flex-start;
     }
   }
 }

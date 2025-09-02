@@ -74,7 +74,6 @@ import { onMounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { articleArchive } from '@/api/article'
 import { dayjs } from 'element-plus'
-import { ElNotification } from 'element-plus'
 import { debounce } from '@/utils'
 import { generatePageSeo } from '@/config/seo'
 import { useSeoMeta } from '@unhead/vue'
@@ -133,12 +132,6 @@ const getArchiveList = async () => {
     loading.value = true
     const { data } = await articleArchive()
     activities.value = data.data || []
-  } catch {
-    ElNotification({
-      title: '错误',
-      message: '获取归档列表失败，请稍后重试',
-      type: 'error'
-    })
   } finally {
     loading.value = false
   }

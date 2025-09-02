@@ -92,6 +92,17 @@ export const routes = [
           title: seoConfig.pages.board.title,
           description: seoConfig.pages.board.description
         }
+      },
+
+      // 维护页面
+      {
+        path: 'maintenance',
+        name: 'Maintenance',
+        component: () => import('@/views/error/Maintenance.vue'),
+        meta: {
+          title: '维护中 - 游荡de蝌蚪',
+          description: '网站维护中，请稍后再访问'
+        }
       }
     ]
   }

@@ -2,7 +2,7 @@
   <header class="header">
     <div class="header-left hidden-mini" @click="toLink('/', 0)">
       <SvgIcon name="logo" width="2.2rem" height="2.2rem" />
-      <h1 class="header-logo-title">{{ userStore.user.name }}</h1>
+      <h1 class="header-logo-title">{{ userStore.website.siteName }}</h1>
     </div>
 
     <div class="header-menu hidden-mini">
@@ -35,7 +35,7 @@
       </template>
     </el-dropdown>
 
-    <h1 class="hidden hidden-large" @click="toLink('/', 0)">{{ userStore.user.name }}</h1>
+    <h1 class="hidden hidden-large" @click="toLink('/', 0)">{{ userStore.website.siteName }}</h1>
 
     <div class="header-right">
       <transition name="theme">
