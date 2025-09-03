@@ -1,0 +1,71 @@
+.server-error-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 200px);
+  padding: 40px 20px;
+  background-color: var(--el-bg-color);
+}
+
+.server-error-container {
+  max-width: 600px;
+  width: 100%;
+  padding: 40px;
+  border-radius: 8px;
+  background-color: var(--el-bg-color-overlay);
+  text-align: center;
+}
+
+.server-error-icon {
+  margin-bottom: 24px;
+  color: var(--el-color-danger);
+}
+
+.server-error-title {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--el-text-color-primary);
+  margin-bottom: 16px;
+}
+
+.server-error-message {
+  font-size: 16px;
+  color: var(--el-text-color-regular);
+  margin-bottom: 24px;
+  line-height: 1.6;
+
+  p {
+    margin-bottom: 8px;
+  }
+}
+
+.server-error-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  .el-button {
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 768px) {
+  .server-error-container {
+    padding: 24px;
+  }
+
+  .server-error-title {
+    font-size: 28px;
+  }
+
+  .server-error-actions {
+    flex-direction: column;
+    align-items: center;
+
+    .el-button {
+      width: 100%;
+      max-width: 200px;
+    }
+  }
+}

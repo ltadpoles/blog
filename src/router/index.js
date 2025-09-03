@@ -92,18 +92,42 @@ export const routes = [
           title: seoConfig.pages.board.title,
           description: seoConfig.pages.board.description
         }
-      },
-
-      // 维护页面
-      {
-        path: 'maintenance',
-        name: 'Maintenance',
-        component: () => import('@/views/error/Maintenance.vue'),
-        meta: {
-          title: '维护中 - 游荡de蝌蚪',
-          description: '网站维护中，请稍后再访问'
-        }
       }
     ]
+  },
+  // 维护页面
+  {
+    path: '/maintenance',
+    name: 'Maintenance',
+    component: () => import('@/views/error/maintenance/index.vue'),
+    meta: {
+      title: '维护中 - 游荡de蝌蚪',
+      description: '网站维护中，请稍后再访问'
+    }
+  },
+  // 404页面
+  {
+    path: '/404',
+    name: 'NotFound',
+    component: () => import('@/views/error/not-found/index.vue'),
+    meta: {
+      title: '页面未找到 - 游荡de蝌蚪',
+      description: '抱歉，您访问的页面不存在'
+    }
+  },
+  // 500页面
+  {
+    path: '/500',
+    name: 'ServerError',
+    component: () => import('@/views/error/server-error/index.vue'),
+    meta: {
+      title: '服务器错误 - 游荡de蝌蚪',
+      description: '服务器出现了问题'
+    }
+  },
+  // 通配符路由，必须放在最后
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/404'
   }
 ]
