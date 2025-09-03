@@ -6,6 +6,14 @@
 import http from '@/utils/http'
 
 /**
+ * 获取文章统计
+ * @returns {Promise} 返回文章/分类/标签数量
+ */
+export const countArticlesByType = () => {
+  return http.get('/article/countArticlesByType')
+}
+
+/**
  * 获取站点统计数据
  * @returns {Promise} 返回站点统计信息
  */

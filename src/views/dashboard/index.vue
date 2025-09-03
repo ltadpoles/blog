@@ -9,7 +9,7 @@
         <div class="categories card">
           <div class="card-header">
             <div class="card-header-left">
-              <SvgIcon name="component" />
+              <SvgIcon name="component" width="0.85rem" height="0.85rem" />
               <span>分类</span>
             </div>
             <div class="card-header-right">
@@ -18,14 +18,25 @@
           </div>
           <el-divider />
           <div class="categories-list">
-            <div
-              class="categories-list-item"
-              v-for="category in categoryList"
-              :key="category.id"
-              @click="toCategory(category.id)"
-            >
-              <div class="categories-title">{{ category.name }}</div>
-              <div class="categories-count">{{ category.articleCount }}</div>
+            <!-- 加载状态 -->
+            <div v-if="loading" class="loading-state">
+              <el-skeleton :rows="3" animated />
+            </div>
+            <!-- 有数据时显示分类列表 -->
+            <template v-else-if="websiteStore.articleStats?.categories?.length">
+              <div
+                class="categories-list-item"
+                v-for="category in websiteStore.articleStats.categories"
+                :key="category.id"
+                @click="toCategory(category.id)"
+              >
+                <div class="categories-title">{{ category.name }}</div>
+                <div class="categories-count">{{ category.articleCount }}</div>
+              </div>
+            </template>
+            <!-- 空数据状态 -->
+            <div v-else class="empty-state">
+              <div class="empty-text">暂无分类数据</div>
             </div>
           </div>
         </div>
@@ -33,7 +44,7 @@
         <div class="tags card">
           <div class="card-header">
             <div class="card-header-left">
-              <SvgIcon name="tag" />
+              <SvgIcon name="tag" width="0.85rem" height="0.85rem" />
               <span>标签</span>
             </div>
             <div class="card-header-right">
@@ -42,9 +53,25 @@
           </div>
           <el-divider />
           <div class="tags-content">
-            <div class="tags-content-item" v-for="tag in tagList" :key="tag.id" @click="toTag(tag.id)">
-              <span>{{ tag.name }}</span>
-              <sup>{{ tag.articleCount }}</sup>
+            <!-- 加载状态 -->
+            <div v-if="loading" class="loading-state">
+              <el-skeleton :rows="2" animated />
+            </div>
+            <!-- 有数据时显示标签列表 -->
+            <template v-else-if="websiteStore.articleStats?.tags?.length">
+              <div
+                class="tags-content-item"
+                v-for="tag in websiteStore.articleStats.tags"
+                :key="tag.id"
+                @click="toTag(tag.id)"
+              >
+                <span>{{ tag.name }}</span>
+                <sup>{{ tag.articleCount }}</sup>
+              </div>
+            </template>
+            <!-- 空数据状态 -->
+            <div v-else class="empty-state">
+              <div class="empty-text">暂无标签数据</div>
             </div>
           </div>
         </div>
@@ -54,13 +81,13 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import user from '@/components/user/index.vue'
 import articleList from '@/components/article/index.vue'
 import { useRouter } from 'vue-router'
-import { categoryStatistics, tagStatistics } from '@/api'
 import { generatePageSeo } from '@/config/seo'
 import { useSeoMeta } from '@unhead/vue'
+import { useWebsiteStore } from '@/stores/modules/website'
 
 // SEO配置
 const seoData = generatePageSeo('home')
@@ -77,18 +104,14 @@ useSeoMeta({
   twitterImage: seoData.image
 })
 
+const websiteStore = useWebsiteStore()
 const router = useRouter()
 
-const categoryList = ref([])
-const tagList = ref([])
-const getCategoryStats = async () => {
-  let { data } = await categoryStatistics()
-  categoryList.value = data.data
-}
-const getTagStats = async () => {
-  let { data } = await tagStatistics()
-  tagList.value = data.data
-}
+// 计算加载状态
+const loading = computed(() => {
+  return !websiteStore.articleStats || (!websiteStore.articleStats.categories && !websiteStore.articleStats.tags)
+})
+
 const toCategory = id => {
   router.push(`/category/${id}`)
 }
@@ -99,8 +122,6 @@ const toTag = id => {
 const articleRef = ref(null)
 onMounted(() => {
   articleRef.value.getList({ category: '', tags: [] })
-  getCategoryStats()
-  getTagStats()
 })
 </script>
 

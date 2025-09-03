@@ -8,9 +8,9 @@
         <span class="time-value">{{ runSeconds }}</span> 秒
       </div>
       <div class="copyright">
-        {{ userStore.website?.siteCopyright }}
+        {{ websiteStore.info.siteCopyright }}
         <a class="icp" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">
-          {{ userStore.website?.siteIcp }}
+          {{ websiteStore.info.siteIcp }}
         </a>
       </div>
       <div class="visit-stats">
@@ -22,11 +22,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { ipStatistics } from '@/api'
-import { useUserStore } from '@/stores/modules/user'
+import { useWebsiteStore } from '@/stores/modules/website'
 
-const userStore = useUserStore()
+const websiteStore = useWebsiteStore()
 
 // 访问量统计
 const visitorCount = ref(0)
@@ -48,7 +48,11 @@ const getStatics = async () => {
 }
 
 // 网站运行时间计算
-const startDate = new Date('2023-01-01') // 网站开始运行的日期
+const startDate = computed(() => {
+  // 从websiteStore获取网站创建时间，如果没有则使用默认时间
+  const createTime = websiteStore.info.createTime
+  return createTime ? new Date(createTime) : new Date('2023-01-01')
+})
 
 const runDays = ref(0)
 const runHours = ref(0)
@@ -58,7 +62,7 @@ const runSeconds = ref(0)
 // 更新运行时间
 const updateRunningTime = () => {
   const now = new Date()
-  const diff = now - startDate
+  const diff = now - startDate.value
 
   const days = Math.floor(diff / (1000 * 60 * 60 * 24))
   const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))

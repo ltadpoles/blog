@@ -26,7 +26,7 @@
 import { onMounted, ref, reactive, computed, watch, nextTick } from 'vue'
 import articleList from '@/components/article/index.vue'
 import { useRoute } from 'vue-router'
-import { categoryStatistics, statistics } from '@/api'
+import { countArticlesByType, statistics } from '@/api'
 import { useRouter } from 'vue-router'
 import { generateCategorySeo, generatePageSeo } from '@/config/seo'
 import { useSeoMeta } from '@unhead/vue'
@@ -79,7 +79,7 @@ const getCategoryStats = async () => {
     loading.value = true
 
     // 并行获取分类统计和总文章数
-    const [categoryRes, statsRes] = await Promise.all([categoryStatistics(), statistics()])
+    const [categoryRes, statsRes] = await Promise.all([countArticlesByType(), statistics()])
 
     // 构建分类列表，包含"全部"选项
     categoryList.value = [
