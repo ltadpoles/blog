@@ -38,14 +38,6 @@ export const tagStatistics = () => {
 }
 
 /**
- * 获取访问统计
- * @returns {Promise} 返回访客数和页面浏览量
- */
-export const ipStatistics = () => {
-  return http.get('/ip/stats')
-}
-
-/**
  * 检查服务器健康状态
  * @returns {Promise} 服务器状态信息
  */

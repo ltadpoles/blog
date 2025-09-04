@@ -14,8 +14,8 @@
         </a>
       </div>
       <div class="visit-stats">
-        <span class="visitor-btn">💫 今日访问量 {{ visitorCount }}</span>
-        <span class="visitor-btn">👁️ 总访问量 {{ pageViewCount }}</span>
+        <span class="visitor-btn">💫 今日访问量 {{ websiteStore.info.stats.todayVisits }}</span>
+        <span class="visitor-btn">👁️ 总访问量 {{ websiteStore.info.stats.totalVisits }}</span>
       </div>
     </div>
   </footer>
@@ -23,7 +23,6 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
-import { ipStatistics } from '@/api'
 import { useWebsiteStore } from '@/stores/modules/website'
 
 const websiteStore = useWebsiteStore()
@@ -31,21 +30,6 @@ const websiteStore = useWebsiteStore()
 // 访问量统计
 const visitorCount = ref(0)
 const pageViewCount = ref(0)
-
-// 获取统计数据
-const getStatics = async () => {
-  try {
-    const { data } = await ipStatistics()
-    if (data && data.data) {
-      visitorCount.value = data.data.todayVisits || 0
-      pageViewCount.value = data.data.totalVisits || 0
-    }
-  } catch {
-    // 处理错误但不输出到控制台
-    visitorCount.value = 591
-    pageViewCount.value = 2642
-  }
-}
 
 // 网站运行时间计算
 const startDate = computed(() => {
@@ -79,7 +63,6 @@ const updateRunningTime = () => {
 let timer
 
 onMounted(() => {
-  getStatics()
   updateRunningTime()
   timer = setInterval(updateRunningTime, 1000)
 })
