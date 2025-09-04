@@ -27,10 +27,6 @@ import { useWebsiteStore } from '@/stores/modules/website'
 
 const websiteStore = useWebsiteStore()
 
-// 访问量统计
-const visitorCount = ref(0)
-const pageViewCount = ref(0)
-
 // 网站运行时间计算
 const startDate = computed(() => {
   // 从websiteStore获取网站创建时间，如果没有则使用默认时间
