@@ -8,14 +8,14 @@
         <span class="time-value">{{ runSeconds }}</span> 秒
       </div>
       <div class="copyright">
-        {{ websiteStore.info.siteCopyright }}
+        {{ websiteStore.info.siteCopyright || '© 2024 游荡de蝌蚪' }}
         <a class="icp" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">
-          {{ websiteStore.info.siteIcp }}
+          {{ websiteStore.info.siteIcp || '' }}
         </a>
       </div>
       <div class="visit-stats">
-        <span class="visitor-btn">💫 今日访问量 {{ websiteStore.info.stats.todayVisits }}</span>
-        <span class="visitor-btn">👁️ 总访问量 {{ websiteStore.info.stats.totalVisits }}</span>
+        <span class="visitor-btn">💫 今日访问量 {{ websiteStore.info.stats?.todayVisits || 0 }}</span>
+        <span class="visitor-btn">👁️ 总访问量 {{ websiteStore.info.stats?.totalVisits || 0 }}</span>
       </div>
     </div>
   </footer>

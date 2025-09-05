@@ -14,14 +14,6 @@ export const countArticlesByType = () => {
 }
 
 /**
- * 获取站点统计数据
- * @returns {Promise} 返回站点统计信息
- */
-export const statistics = () => {
-  return http.get('/article/stats')
-}
-
-/**
  * 获取分类文章统计
  * @returns {Promise} 返回各分类下文章数量
  */

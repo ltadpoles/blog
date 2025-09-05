@@ -3,7 +3,7 @@
     <div class="view-content">
       <article-list ref="articleRef" />
     </div>
-    <div class="view-sidebar hidden-mini">
+    <div class="view-sidebar hidden-mini hidden">
       <user />
       <el-affix :offset="64">
         <div class="categories card">

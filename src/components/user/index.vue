@@ -3,7 +3,7 @@
     <div class="user-img">
       <img :src="websiteStore.info.avatar || getImageUrl('avatar.jpg')" alt="" />
     </div>
-    <div class="user-motto">{{ websiteStore.info.siteNotice }}</div>
+    <div class="user-motto">{{ websiteStore.info.siteNotice || '欢迎来到我的博客' }}</div>
     <div class="user-statistics">
       <div class="user-statistics-item">
         <div class="item-count">{{ websiteStore.articleStats?.articles }}</div>

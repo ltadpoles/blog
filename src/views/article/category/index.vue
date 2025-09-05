@@ -26,13 +26,14 @@
 import { onMounted, ref, reactive, computed, watch, nextTick } from 'vue'
 import articleList from '@/components/article/index.vue'
 import { useRoute } from 'vue-router'
-import { countArticlesByType, statistics } from '@/api'
 import { useRouter } from 'vue-router'
 import { generateCategorySeo, generatePageSeo } from '@/config/seo'
 import { useSeoMeta } from '@unhead/vue'
+import { useWebsiteStore } from '@/stores/modules/website'
 
 const route = useRoute()
 const router = useRouter()
+const websiteStore = useWebsiteStore()
 
 // 当前分类信息
 const currentCategory = reactive({
@@ -78,17 +79,17 @@ const getCategoryStats = async () => {
   try {
     loading.value = true
 
-    // 并行获取分类统计和总文章数
-    const [categoryRes, statsRes] = await Promise.all([countArticlesByType(), statistics()])
+    // 直接从websiteStore获取已存储的统计数据
+    const statsData = websiteStore.articleStats
 
     // 构建分类列表，包含"全部"选项
     categoryList.value = [
       {
         name: '全部',
         id: '',
-        articleCount: statsRes.data.data?.articles || 0 // 使用总文章数
+        articleCount: statsData?.articles || 0 // 使用总文章数
       },
-      ...categoryRes.data.data
+      ...(statsData?.categories || []) // 使用返回的分类数据
     ]
 
     // 初始化当前分类信息

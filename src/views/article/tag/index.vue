@@ -26,13 +26,14 @@
 import { onMounted, ref, reactive, computed, watch, nextTick } from 'vue'
 import articleList from '@/components/article/index.vue'
 import { useRoute } from 'vue-router'
-import { tagStatistics, statistics } from '@/api'
 import { useRouter } from 'vue-router'
 import { generateTagSeo, generatePageSeo } from '@/config/seo'
 import { useSeoMeta } from '@unhead/vue'
+import { useWebsiteStore } from '@/stores/modules/website'
 
 const route = useRoute()
 const router = useRouter()
+const websiteStore = useWebsiteStore()
 
 // 当前标签信息
 const currentTag = reactive({
@@ -78,17 +79,17 @@ const getTagStats = async () => {
   try {
     loading.value = true
 
-    // 并行获取标签统计和总文章数
-    const [tagRes, statsRes] = await Promise.all([tagStatistics(), statistics()])
+    // 直接从websiteStore获取已存储的统计数据
+    const statsData = websiteStore.articleStats
 
     // 构建标签列表，包含"全部"选项
     tagList.value = [
       {
         name: '全部',
         id: '',
-        articleCount: statsRes.data.data?.articles || 0 // 使用总文章数
+        articleCount: statsData?.articles || 0 // 使用总文章数
       },
-      ...tagRes.data.data
+      ...(statsData?.tags || []) // 使用返回的标签数据
     ]
 
     // 初始化当前标签信息

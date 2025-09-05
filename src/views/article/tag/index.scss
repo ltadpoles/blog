@@ -5,14 +5,26 @@
   gap: 10px 15px;
 
   &-item {
-    padding: 6px 8px;
+    padding: 6px 12px;
     background-color: var(--el-bg-color-page);
-    border-radius: 3px;
+    border: 1px solid var(--el-border-color);
+    border-radius: 4px;
     cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      color: var(--el-color-primary);
+      border-color: var(--el-color-primary);
+      background-color: var(--el-color-primary-light-9);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
 
     &-active {
       color: var(--el-color-primary);
+      border-color: var(--el-color-primary);
       background-color: var(--el-color-primary-light-9);
+      font-weight: 500;
     }
   }
 }
@@ -25,10 +37,14 @@
 
   &-left {
     font-size: 1.5rem;
+    font-weight: 600;
   }
 
   &-right {
     color: var(--el-color-primary);
-    border-radius: 3px;
+    background-color: var(--el-color-primary-light-9);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 500;
   }
 }

@@ -182,7 +182,7 @@ export const sitemapConfig = {
         }
       }
 
-      // 获取评论数据 - 这里主要是为了sitemap的完整性，评论通常不需要独立的路由
+      // 获取评论数据 - 用于sitemap优先级调整
       const commentResponse = await fetch('http://127.0.0.1:3000/api/comment/page', {
         method: 'POST',
         headers: {
@@ -197,11 +197,8 @@ export const sitemapConfig = {
         // 评论数据获取成功，主要用于sitemap生成时的数据完整性检查
       }
 
-      // 获取统计信息 - 用于sitemap元数据
-      const statsResponse = await fetch('http://127.0.0.1:3000/api/article/stats')
-      if (statsResponse.ok) {
-        // 统计信息获取成功，可用于sitemap优先级调整等
-      }
+      // 统计信息已通过layout组件初始化时获取，无需重复调用接口
+      // 这里可以保留空的处理逻辑以保持代码结构一致
     } catch {
       // API调用失败时静默处理，返回空数组
     }

@@ -394,8 +394,14 @@ const scrollToCommentList = () => {
 
 // 获取用户对文章的点赞状态
 const getUserArticleLikeStatus = async () => {
-  // 确保用户已登录且文章信息已加载
-  if (!userStore.message.userId || !route.params.id) {
+  // 确保文章信息已加载
+  if (!route.params.id) {
+    isArticleLiked.value = false
+    return
+  }
+
+  // 如果没有userId，不调用接口，保持默认状态
+  if (!userStore.message.userId) {
     isArticleLiked.value = false
     return
   }
@@ -412,28 +418,37 @@ const getUserArticleLikeStatus = async () => {
 
 // 切换文章点赞状态
 const toggleArticleLike = async () => {
-  if (!userStore.message.userId) {
-    ElMessage.warning('请先登录后再点赞')
+  if (!route.params.id) {
+    ElMessage.error('文章ID不存在')
     return
   }
 
   try {
     const articleId = Number(route.params.id)
+    const currentLikeStatus = isArticleLiked.value
+
+    // 先更新本地状态，提供即时反馈
+    isArticleLiked.value = !currentLikeStatus
+    info.likeCount = isArticleLiked.value ? (info.likeCount || 0) + 1 : Math.max(0, (info.likeCount || 0) - 1)
+
     const { data } = await toggleLike({
       entityId: articleId,
       entityType: 'article',
-      isLike: !isArticleLiked.value,
+      isLike: isArticleLiked.value,
       userId: userStore.message.userId
     })
 
-    userStore.setMessage({ userId: data.data?.userId })
+    // 更新用户信息，只更新userId，保留其他字段
+    if (data.data?.userId) {
+      userStore.setMessage({ ...userStore.message, userId: data.data.userId })
+    }
 
-    // 更新本地点赞状态
-    isArticleLiked.value = !isArticleLiked.value
-
-    // 更新点赞数量
-    info.likeCount = isArticleLiked.value ? (info.likeCount || 0) + 1 : Math.max(0, (info.likeCount || 0) - 1)
+    // 显示成功消息
+    ElMessage.success(isArticleLiked.value ? '点赞成功' : '取消点赞成功')
   } catch {
+    // 操作失败时回滚本地状态
+    isArticleLiked.value = !isArticleLiked.value
+    info.likeCount = isArticleLiked.value ? (info.likeCount || 0) + 1 : Math.max(0, (info.likeCount || 0) - 1)
     ElMessage.error('点赞操作失败，请稍后重试')
   }
 }
