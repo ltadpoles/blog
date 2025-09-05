@@ -76,6 +76,7 @@ blog/
 │   │   ├── 📄 user.js               # 用户相关接口
 │   │   └── 📄 index.js              # 通用接口
 │   ├── 📁 assets/                   # 静态资源
+│   │   ├── 📁 fonts/                # 字体文件
 │   │   ├── 📁 images/               # 图片资源
 │   │   ├── 📁 styles/               # 样式文件
 │   │   │   ├── 📄 base.scss         # 基础样式
@@ -198,8 +199,6 @@ pnpm format
 # 代码检查和修复
 pnpm lint
 
-# 类型检查（如果配置了 TypeScript）
-pnpm type-check
 ```
 
 ## 🔧 配置说明
@@ -208,7 +207,6 @@ pnpm type-check
 
 项目使用环境变量来配置不同环境下的参数，配置文件位于 `env/` 目录下：
 
-- `.env`: 基础环境变量配置
 - `.env.development`: 开发环境配置
 - `.env.production`: 生产环境配置
 
@@ -437,10 +435,6 @@ server {
 }
 ```
 
-#### Vercel 部署
-
-项目支持 Vercel 部署，直接导入项目即可自动部署。
-
 ### 环境变量配置
 
 在生产环境中，需要配置以下环境变量：
@@ -489,7 +483,3 @@ pnpm lint
 本项目采用 MIT 协议，详情请查看 [LICENSE](LICENSE) 文件。
 
 ---
-
-<p align="center">
-  © 2024 游荡de蝌蚪 | 陇ICP备2025022395号-1
-</p>
