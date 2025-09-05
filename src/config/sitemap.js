@@ -60,6 +60,8 @@ export const sitemapConfig = {
   // 动态路由生成函数
   async generateDynamicRoutes() {
     const routes = []
+    // 从环境变量获取API基础URL，如果没有则使用默认值
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:3000'
 
     try {
       // 获取文章列表 - 分批获取所有文章
@@ -68,7 +70,7 @@ export const sitemapConfig = {
       let hasMore = true
 
       while (hasMore) {
-        const articlesResponse = await fetch('http://127.0.0.1:3000/api/article/page', {
+        const articlesResponse = await fetch(`${API_BASE_URL}/api/article/page`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -104,7 +106,7 @@ export const sitemapConfig = {
       }
 
       // 获取分类统计列表
-      const categoriesResponse = await fetch('http://127.0.0.1:3000/api/article/countArticlesByCategory')
+      const categoriesResponse = await fetch(`${API_BASE_URL}/api/article/countArticlesByCategory`)
       if (categoriesResponse.ok) {
         const categoriesData = await categoriesResponse.json()
         if (categoriesData && categoriesData.data && Array.isArray(categoriesData.data)) {
@@ -121,7 +123,7 @@ export const sitemapConfig = {
       }
 
       // 获取标签统计列表
-      const tagsResponse = await fetch('http://127.0.0.1:3000/api/article/countArticlesByTag')
+      const tagsResponse = await fetch(`${API_BASE_URL}/api/article/countArticlesByTag`)
       if (tagsResponse.ok) {
         const tagsData = await tagsResponse.json()
         if (tagsData && tagsData.data && Array.isArray(tagsData.data)) {
@@ -138,7 +140,7 @@ export const sitemapConfig = {
       }
 
       // 获取文章归档数据
-      const archiveResponse = await fetch('http://127.0.0.1:3000/api/article/archive')
+      const archiveResponse = await fetch(`${API_BASE_URL}/api/article/archive`)
       if (archiveResponse.ok) {
         const archiveData = await archiveResponse.json()
         if (archiveData && archiveData.data) {
@@ -153,7 +155,7 @@ export const sitemapConfig = {
       let boardHasMore = true
 
       while (boardHasMore) {
-        const boardResponse = await fetch('http://127.0.0.1:3000/api/board/page', {
+        const boardResponse = await fetch(`${API_BASE_URL}/api/board/page`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -183,7 +185,7 @@ export const sitemapConfig = {
       }
 
       // 获取评论数据 - 用于sitemap优先级调整
-      const commentResponse = await fetch('http://127.0.0.1:3000/api/comment/page', {
+      const commentResponse = await fetch(`${API_BASE_URL}/api/comment/page`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

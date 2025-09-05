@@ -8,8 +8,8 @@
   },
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "vite-ssg build && node scripts/generate-sitemap.js",
-    "build:basic": "vite-ssg build",
+    "build:prod": "vite-ssg build --mode production && node scripts/generate-sitemap.js",
+    "build": "vite-ssg build --mode development && node scripts/generate-sitemap.js",
     "preview": "vite preview",
     "lint": "eslint . --fix",
     "format": "prettier --write src/",

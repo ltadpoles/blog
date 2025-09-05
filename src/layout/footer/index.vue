@@ -10,7 +10,7 @@
       <div class="copyright">
         {{ websiteStore.info.siteCopyright || '© 2024 游荡de蝌蚪' }}
         <a class="icp" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">
-          {{ websiteStore.info.siteIcp || '' }}
+          {{ websiteStore.info.siteIcp || '陇ICP备2025022395号-1' }}
         </a>
       </div>
       <div class="visit-stats">

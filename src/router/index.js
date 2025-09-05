@@ -56,8 +56,9 @@ export const routes = [
         name: 'Article',
         component: () => import('@/views/article/index.vue'),
         meta: {
-          title: '文章详情',
-          description: '阅读文章的详细信息'
+          title: '文章详情 - 游荡de蝌蚪',
+          description: '阅读游荡de蝌蚪博客的技术文章详细内容',
+          keywords: '技术文章,博客文章,Vue.js,JavaScript,前端开发'
         }
       },
 
