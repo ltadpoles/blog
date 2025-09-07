@@ -12,7 +12,7 @@ let maintenanceNotification = null
 
 // 创建 Axios 实例
 const http = axios.create({
-  timeout: 3000,
+  // timeout: 3000,
   baseURL: config.BASEURL || '/api'
 })
 
