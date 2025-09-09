@@ -41,6 +41,7 @@ import CommentList from '@/components/comment-list/index.vue'
 import { getBoardPage } from '@/api/board'
 import { generatePageSeo } from '@/config/seo'
 import { useSeoMeta } from '@unhead/vue'
+import { useUserStore } from '@/stores/modules/user'
 
 // SEO配置
 const seoData = generatePageSeo('board')
@@ -57,6 +58,7 @@ useSeoMeta({
 })
 
 // 留言数据
+const userStore = useUserStore()
 const messages = ref([])
 
 // 分页配置
@@ -71,7 +73,10 @@ const getList = async () => {
   try {
     const { data } = await getBoardPage({
       pageNum: pagination.pageNum,
-      pageSize: pagination.pageSize
+      pageSize: pagination.pageSize,
+      param: {
+        userId: userStore.message.userId
+      }
     })
 
     messages.value = data.data.list

@@ -17,7 +17,7 @@
       </div>
 
       <!-- 评论按钮 -->
-      <div class="floating-action-item">
+      <div class="floating-action-item" v-if="commentEnabled">
         <el-badge
           :value="commentPagination.total || 0"
           :max="999"
@@ -58,7 +58,7 @@
       </div>
 
       <!-- 评论区域 -->
-      <div class="article-comments">
+      <div class="article-comments" v-if="commentEnabled">
         <el-divider />
         <div class="comment-section">
           <div class="comment-header">
@@ -117,7 +117,7 @@
 </template>
 
 <script setup>
-import { reactive, onMounted, onUnmounted, nextTick, ref } from 'vue'
+import { reactive, onMounted, onUnmounted, nextTick, ref, computed } from 'vue'
 import { MdPreview } from 'md-editor-v3'
 import 'md-editor-v3/lib/preview.css'
 import { useSettingStore } from '@/stores/modules/setting'
@@ -159,6 +159,9 @@ let info = reactive({
   activeId: null,
   likeCount: 0 // 初始化点赞数量
 })
+
+// 是否开启评论：后端固定返回字符串 '1' 或 '0'
+const commentEnabled = computed(() => info?.isComment === '1')
 
 // 评论相关数据
 const comments = ref([])
@@ -311,6 +314,13 @@ const getInfo = async () => {
 
   // 获取用户点赞状态（在文章信息加载完成后）
   await getUserArticleLikeStatus()
+
+  // 若关闭评论，重置评论数据
+  if (!commentEnabled.value) {
+    comments.value = []
+    commentPagination.pageNum = 1
+    commentPagination.total = 0
+  }
 }
 
 // 获取评论列表
@@ -332,6 +342,9 @@ const getCommentList = async () => {
 
 // 评论提交处理
 const onCommentSubmit = async () => {
+  if (!commentEnabled.value) {
+    return
+  }
   commentPagination.pageNum = 1
   await getCommentList()
 
@@ -354,6 +367,9 @@ const onReplySubmit = async ({ parentId, replies }) => {
 
 // 评论分页改变
 const handleCommentPageChange = async current => {
+  if (!commentEnabled.value) {
+    return
+  }
   commentPagination.pageNum = current
   await getCommentList()
 
@@ -369,6 +385,9 @@ const onLikeChange = () => {
 
 // 滚动到评论列表开始位置
 const scrollToCommentList = () => {
+  if (!commentEnabled.value) {
+    return
+  }
   try {
     const commentListElement = document.querySelector('.comment-list-section')
     if (!commentListElement) {
@@ -462,7 +481,9 @@ onMounted(async () => {
   await getInfo()
 
   // 加载评论列表
-  await getCommentList()
+  if (commentEnabled.value) {
+    await getCommentList()
+  }
 
   // 等待文章内容渲染完成后再计算锚点
   setTimeout(calculateOffsets, 500)
