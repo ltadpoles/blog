@@ -13,6 +13,9 @@
             <div class="comment-header">
               <h4 class="comment-name">
                 <span>{{ item.user?.name }}</span>
+                <!-- 添加置顶标识 -->
+                <span v-if="item.top === '1'" class="top-tag">置顶</span>
+                <span v-if="item.isPrivate === '1'" class="top-tag-private">私密</span>
               </h4>
               <div class="comment-meta">
                 <span v-if="item.ipCountry" class="comment-location">
@@ -28,10 +31,12 @@
                 <SvgIcon name="like" :class="{ liked: isLiked(item.id) }" />
                 <span>{{ item.likeCount || 0 }}</span>
               </div>
+              <!-- 添加条件判断：如果item.isReply不为0则显示回复按钮 -->
               <div
                 class="comment-action-item"
                 @click="toggleReplyBox(item.id)"
                 :class="{ 'reply-active': replying[item.id] }"
+                v-if="item.isReply !== '0'"
               >
                 <SvgIcon name="message" :class="{ 'reply-active': replying[item.id] }" />
                 <span>{{ replying[item.id] ? '取消回复' : '回复' }}</span>
@@ -82,10 +87,12 @@
                       <SvgIcon name="like" :class="{ liked: isLiked(reply.id) }" />
                       <span>{{ reply.likeCount || 0 }}</span>
                     </div>
+                    <!-- 添加条件判断：如果父级item.isReply不为0则显示回复按钮 -->
                     <div
                       class="comment-action-item"
                       @click="toggleReplyBox(`${item.id}-${reply.id}`)"
                       :class="{ 'reply-active': replyingToReply[`${item.id}-${reply.id}`] }"
+                      v-if="item.isReply !== '0'"
                     >
                       <SvgIcon name="message" :class="{ 'reply-active': replyingToReply[`${item.id}-${reply.id}`] }" />
                       <span>{{ replyingToReply[`${item.id}-${reply.id}`] ? '取消回复' : '回复' }}</span>
